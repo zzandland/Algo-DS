@@ -10,17 +10,19 @@
  * @return {number[]}
  */
 var inorderTraversal = function(root) {
-  var output = [];
-  var stack = [];
-  var node = root;
-  while (node || stack.length > 0) {
-    while (node !== null) {
-      stack.push(node);
-      node = node.left;
+    if (!root) {
+        return [];
     }
-    node = stack.pop();
-    output.push(node.val);
-    node = node.right;
-  }
-  return output;
+    var output = [];
+    var innerFunc = function(node) {
+        if (node.left) {
+            innerFunc(node.left);
+        }
+        output.push(node.val);  
+        if (node.right) {
+            innerFunc(node.right);
+        }
+    }
+    innerFunc(root);
+    return output;
 };
