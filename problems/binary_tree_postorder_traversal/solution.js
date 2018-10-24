@@ -10,15 +10,19 @@
  * @return {number[]}
  */
 var postorderTraversal = function(root) {
-  var output = [];
-  var innerFunc = function(node) {
-    if (node !== null) {
-      innerFunc(node.left);
-      innerFunc(node.right);
-      output.push(node.val);
+    if (!root) {
+        return [];
     }
-  }
-  innerFunc(root);
-  
-  return output;
+    var output = [];
+    var innerFunc = function(node) {
+        if (node.left) {
+            innerFunc(node.left);
+        }
+        if (node.right) {
+            innerFunc(node.right);
+        }
+        output.push(node.val);  
+    }
+    innerFunc(root);
+    return output;  
 };
