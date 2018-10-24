@@ -10,18 +10,19 @@
  * @return {number[]}
  */
 var preorderTraversal = function(root) {
-  var output = [];
-  var stack = [];
-  var node = root;
-  while (node || stack.length > 0) {
-    if (node === null) {
-      node = stack.pop();
+    if (!root) {
+        return [];
     }
-    output.push(node.val);
-    if (node.right !== null) {
-      stack.push(node.right);
-    } 
-    node = node.left;
-  }
-  return output;
+    var output = [];
+    var innerFunc = function(node) {
+        output.push(node.val);  
+        if (node.left) {
+            innerFunc(node.left);
+        }
+        if (node.right) {
+            innerFunc(node.right);
+        }
+    }
+    innerFunc(root);
+    return output;
 };
