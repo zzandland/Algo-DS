@@ -10,34 +10,32 @@
  * @return {number[][]}
  */
 var levelOrder = function(root) {
-    if (!root) {
-        return [];
+  if (!root) {
+    return [];
+  }
+  var output = [];
+  var queue = [{
+    level: 0,
+    node: root
+  }];
+  while (queue.length) {
+    node = queue.pop();
+    if (!output[node.level]) {
+      output[node.level] = [];
     }
-    var queue = [{
-        level: 0,
-        node: root
-    }];
-    var output = [];
-    var nodeObj;
-    while(queue.length) {
-        nodeObj = queue.pop();
-        if (!output[nodeObj.level]) {
-            output[nodeObj.level] = [nodeObj.node.val];
-        } else {
-            output[nodeObj.level].splice(0, 0, nodeObj.node.val);
-        }
-        if (nodeObj.node.left) {
-            queue.push({
-                level: nodeObj.level + 1,
-                node: nodeObj.node.left
-            });
-        }
-        if (nodeObj.node.right) {
-            queue.push({
-                level: nodeObj.level + 1,
-                node: nodeObj.node.right
-            })
-        }
+    output[node.level].push(node.node.val);
+    if (node.node.left) {
+      queue.unshift({
+        node: node.node.left,
+        level: node.level + 1
+      });
     }
-    return output;
-};
+    if (node.node.right) {
+      queue.unshift({
+        node: node.node.right,
+        level: node.level + 1
+      });
+    }
+  }
+  return output;
+}
