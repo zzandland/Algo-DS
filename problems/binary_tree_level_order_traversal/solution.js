@@ -14,28 +14,24 @@ var levelOrder = function(root) {
     return [];
   }
   var output = [];
-  var queue = [{
-    level: 0,
-    node: root
-  }];
+  var queue = [root];
+  var level = -1;
+  var length;
+  var node;
   while (queue.length) {
-    node = queue.pop();
-    if (!output[node.level]) {
-      output[node.level] = [];
-    }
-    output[node.level].push(node.node.val);
-    if (node.node.left) {
-      queue.unshift({
-        node: node.node.left,
-        level: node.level + 1
-      });
-    }
-    if (node.node.right) {
-      queue.unshift({
-        node: node.node.right,
-        level: node.level + 1
-      });
+    level += 1;
+    output[level] = [];
+    length = queue.length;
+    for (var i = 0; i < length; i++) {
+      node = queue.pop();
+      output[level].push(node.val);
+      if (node.left) {
+        queue.unshift(node.left);
+      }
+      if (node.right) {
+        queue.unshift(node.right);
+      }
     }
   }
   return output;
-}
+};
