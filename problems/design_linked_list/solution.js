@@ -1,14 +1,13 @@
 /**
  * Initialize your data structure here.
  */
-var SinglyLinkedNode = function(val) {
+var DoublyLinkedNode = function(val) {
   this.val = val;
-  this.next = null;
+  this.next = this.prev = null;
 }
 
 var MyLinkedList = function() {
-  this.head = null;
-  this.tail = null;
+  this.head = this.tail = null;   
 };
 
 /**
@@ -17,19 +16,12 @@ var MyLinkedList = function() {
  * @return {number}
  */
 MyLinkedList.prototype.get = function(index) {
-  if (!this.head) {
-    return -1;
-  }
   var node = this.head;
-  while (index > 0 && node.next) {
-    node = node.next;
+  while (index > 0 && node) {
     index--;
+    node = node.next;
   }
-  if (index === 0) { 
-    return node.val;
-  } else {
-    return -1;
-  }
+  return node === null ? -1 : node.val;  
 };
 
 /**
@@ -38,15 +30,15 @@ MyLinkedList.prototype.get = function(index) {
  * @return {void}
  */
 MyLinkedList.prototype.addAtHead = function(val) {
-  var newHead = new SinglyLinkedNode(val);  
-  if (!this.head) {
-    this.head = newHead; 
+  var newNode = new DoublyLinkedNode(val);
+  if (!this.head && !this.tail) {
+    this.head = this.tail = newNode;
   } else {
     var oldHead = this.head;
-    this.head = newHead;
+    this.head = newNode;
     this.head.next = oldHead;
+    oldHead.prev = this.head;    
   }
-  if (!this.tail) this.tail = newHead;
 };
 
 /**
@@ -55,13 +47,13 @@ MyLinkedList.prototype.addAtHead = function(val) {
  * @return {void}
  */
 MyLinkedList.prototype.addAtTail = function(val) {
-  var newTail = new SinglyLinkedNode(val);
-  if (!this.head) this.head = newTail;
-  if (!this.tail) {
-    this.tail = newTail; 
+  var newNode = new DoublyLinkedNode(val);
+  if (!this.head && !this.tail) {
+    this.head = this.tail = newNode;
   } else {
     var oldTail = this.tail;
-    this.tail = newTail;
+    this.tail = newNode;
+    this.tail.prev = oldTail;
     oldTail.next = this.tail;
   }
 };
@@ -75,21 +67,21 @@ MyLinkedList.prototype.addAtTail = function(val) {
 MyLinkedList.prototype.addAtIndex = function(index, val) {
   if (index === 0) {
     this.addAtHead(val);
-  } else if (index > 0) {
-    var node = this.head;
-    while (index - 1 > 0 && node) {
-      node = node.next;
-      index--;
-    }
-    if (node) {
-      var oldNext = node.next;
-      var newNode = new SinglyLinkedNode(val);
-      node.next = newNode;
-      newNode.next = oldNext;
-      if (!oldNext) {
-        this.tail = newNode;
-      }
-    }
+    return;
+  } 
+  var node = this.head;
+  for (var i = 0; i < index && node; i++) {
+    node = node.next;    
+  }
+  if (node) {
+    var newNode = new DoublyLinkedNode(val);
+    var prev = node.prev;
+    newNode.next = node;
+    newNode.prev = prev;
+    prev.next = newNode;
+    node.prev = newNode;
+  } else if (!node && i === index) {
+    this.addAtTail(val);
   }
 };
 
@@ -101,15 +93,21 @@ MyLinkedList.prototype.addAtIndex = function(index, val) {
 MyLinkedList.prototype.deleteAtIndex = function(index) {
   if (index === 0) {
     this.head = this.head.next;
-  } else if (index > 0) {
-    var node = this.head;
-    while (index - 1 > 0 && node) {
-      node = node.next;
-      index--;
-    }
-    if (node && node.next) {
-      node.next = node.next.next;
-      if (!node.next) this.tail = node;
+    this.head.prev = null;
+    return;
+  }
+  var node = this.head;
+  for (var i = 0; i < index && node; i++) {
+    node = node.next;
+  }
+  if (node) {
+    var prev = node.prev;
+    if (node.next) {
+      node.next.prev = prev;
+    } 
+    prev.next = node.next;
+    if (!prev.next) {
+      this.tail = prev;
     }
   }
 };
