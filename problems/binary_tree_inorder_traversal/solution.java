@@ -8,19 +8,16 @@
  * }
  */
 class Solution {
-    public List<Integer> inorderTraversal(TreeNode root) {
-      ArrayList<Integer> output = new ArrayList<Integer>();
-      Stack<TreeNode> stack = new Stack<TreeNode>();
-      TreeNode node = root;
-      while (node != null || stack.size() != 0) {
-        while (node != null) {
-          stack.push(node);
-          node = node.left;
-        }        
-        node = stack.pop();
-        output.add(node.val);
-        node = node.right;
-      }
-      return output;
-    }
+  public List<Integer> inorderTraversal(TreeNode root) {
+    List<Integer> output = new ArrayList<Integer>();
+    if (root == null) return output;
+    this.inorderTraversalRecurse(root, output);
+    return output;
+  }
+  
+  private void inorderTraversalRecurse(TreeNode node, List<Integer> list) {
+    if (node.left != null) inorderTraversalRecurse(node.left, list);
+    list.add(node.val);
+    if (node.right != null) inorderTraversalRecurse(node.right, list);
+  }
 }
