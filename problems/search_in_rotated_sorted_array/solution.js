@@ -4,51 +4,34 @@
  * @return {number}
  */
 var search = function(nums, target) {
-  if (nums.length === 1) {
-    return nums[0] === target ? 0 : -1
-  }
-  var left, right, mid, leftDif, rightDif, max;
-  left = 0;
-  right = nums.length - 1;
-  if (nums[left] < nums[right]) {
-    max = right;
-  }
-  while (right > left && max === undefined) {
-    mid = left + Math.floor((right - left) / 2);
-    if (nums[mid] > nums[mid + 1]) {
-      max = mid;
-      break;
-    }
-    leftDif = Math.abs(nums[mid] - nums[left]);
-    rightDif = Math.abs(nums[mid] - nums[right]);
-    if (leftDif > rightDif) {
-      right = mid;
-    } else if (leftDif < rightDif) {
-      left = mid;
-    }
-  }
-  if (max === undefined) {
-    max = left - 1;
-  }
-  
-  if (target >= nums[0]) {
-    left = 0;
-    right = max;
-  } else if (target < nums[0]) {
-    left = max + 1;
-    right = nums.length - 1;
-  }
+  if (nums === null || nums.length === 0) return -1;
+  var left = 0;
+  var right = nums.length - 1;
+  var pivot = findPivot(nums);
+  if (nums[right] >= target) return binarySearch(nums, pivot, right, target);
+  else return binarySearch(nums, 0, pivot - 1, target);
+};
 
+function findPivot(nums) {
+  var left = 0;
+  var right = nums.length - 1;
+  if (nums[left] < nums[right] || left === right) return 0;
+  while (right > left + 1) {
+    var mid = left + Math.floor((right - left) / 2);
+    if (mid + 1 < nums.length && nums[mid] > nums[mid + 1]) return mid + 1;
+    if (mid - 1 >= 0 && nums[mid - 1] > nums[mid]) return mid;
+    if (nums[mid] < nums[right]) right = mid;
+    else left = mid;
+  }
+  return right;
+}
+
+function binarySearch(nums, left, right, target) {
   while (right >= left) {
-    mid = left + Math.floor((right - left) / 2);
-    if (nums[mid] === target) {
-      return mid;
-    }
-    if (nums[mid] < target) {
-      left = mid + 1;
-    } else if (nums[mid] > target) {
-      right = mid - 1;
-    }
+    var mid = left + Math.floor((right - left) / 2);
+    if (nums[mid] === target) return mid;
+    if (nums[mid] > target) right = mid - 1;
+    else left = mid + 1;
   }
   return -1;
-};
+}
