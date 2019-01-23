@@ -1,17 +1,29 @@
 class Solution {
   public String addBinary(String a, String b) {
-    char[] aArr = a.toCharArray();
-    char[] bArr = b.toCharArray();
-    StringBuilder output = new StringBuilder();
-    int aLen = aArr.length - 1, bLen = bArr.length - 1, sum, lifted = 0;
-    while (aLen >= 0 || bLen >= 0) {
-      sum = lifted;
-      if (aLen >= 0) sum += aArr[aLen--] - '0';
-      if (bLen >= 0) sum += bArr[bLen--] - '0';
-      output.insert(0, sum % 2);
-      lifted = sum / 2;
+    int aIdx = a.length() - 1;
+    int bIdx = b.length() - 1;
+    int sum = 0;
+    int lift = 0;
+    StringBuilder build = new StringBuilder();
+    while (aIdx >= 0 || bIdx >= 0) {
+      if (aIdx >= 0) {
+        sum += a.charAt(aIdx) - '0'; 
+        aIdx--;
+      }
+      if (bIdx >= 0) {
+        sum += b.charAt(bIdx) - '0'; 
+        bIdx--;
+      }
+      if (sum > 1) {
+        sum -= 2;
+        lift = 1;
+      } else {
+        lift = 0;
+      }
+      build.append(sum);
+      sum = lift;
     }
-    if (lifted == 1) output.insert(0, lifted);
-    return output.toString();
+    if (sum == 1) build.append(sum);
+    return build.reverse().toString();
   }
 }
