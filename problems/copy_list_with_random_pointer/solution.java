@@ -9,34 +9,34 @@
 import java.util.HashMap;
 
 public class Solution {
-  public RandomListNode copyRandomList(RandomListNode head) {
-    HashMap<RandomListNode, RandomListNode> map = new HashMap<RandomListNode, RandomListNode>();
-    RandomListNode copyHead = copyNext(head, map);
-    copyRandom(head, copyHead, map);
-    return copyHead;
-  }
+  HashMap<RandomListNode, RandomListNode> map = new HashMap<RandomListNode, RandomListNode>();
 
-  private RandomListNode copyNext(RandomListNode head, HashMap<RandomListNode, RandomListNode> map) {
-    RandomListNode output = null, outputHead = null;
+  public RandomListNode copyRandomList(RandomListNode head) {
+    RandomListNode output = null;
+    RandomListNode outputHead = null;
     while (head != null) {
       if (output == null) {
-        output = new RandomListNode(head.label);
+        output = copyNode(head);
         outputHead = output;
       } else {
-        output.next = new RandomListNode(head.label);
+        output.next = copyNode(head);
         output = output.next;
       }
-      map.put(head, output);
+      if (head.random != null) output.random = copyNode(head.random);
       head = head.next;
     }
     return outputHead;
   }
 
-  private void copyRandom(RandomListNode head, RandomListNode copyHead, HashMap<RandomListNode, RandomListNode> map) {
-    while (head != null) {
-      if (head.random != null) copyHead.random = map.get(head.random);
-      head = head.next;
-      copyHead = copyHead.next;
-    }
+  private RandomListNode copyNode(RandomListNode node) {
+    if (node != null) {
+      if (map.containsKey(node)) {
+        return map.get(node);
+      } else {
+        map.put(node, new RandomListNode(node.label));
+        return map.get(node);
+      } 
+    } 
+    return null;
   }
 }
