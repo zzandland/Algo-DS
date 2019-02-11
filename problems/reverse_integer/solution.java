@@ -1,18 +1,16 @@
 class Solution {
-    public int reverse(int x) {
-      int output = 0, temp, sign;
+  public int reverse(int x) {
+    try {
+      boolean negative = false;
       if (x < 0) {
-        sign = -1;
+        negative = true;
         x *= -1;
-      } else {
-        sign = 1;
       }
-      while (x > 0) {
-        temp = output * 10 + x % 10;
-        if (temp / 10 != output) return 0;
-        output = temp;
-        x /= 10;
-      }
-      return output * sign;
+      StringBuilder build = new StringBuilder(String.valueOf(x));
+      int reversed = Integer.parseInt(build.reverse().toString());
+      return (negative) ? -1 * reversed : reversed;
+    } catch (NumberFormatException e) {
+      return 0;
     }
+  }
 }
