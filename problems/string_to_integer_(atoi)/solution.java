@@ -1,16 +1,15 @@
 import java.util.regex.*;
 
 class Solution {
-    public int myAtoi(String str) {
-      Pattern regex = Pattern.compile("^(\\s*)([+-]?\\d+)");
-      Matcher match = regex.matcher(str);
-      if (match.find()) {
-        Double val = Double.parseDouble(match.group(2));
-        if (val < Integer.MIN_VALUE) return Integer.MIN_VALUE;
-        if (val > Integer.MAX_VALUE) return Integer.MAX_VALUE;
-        return val.intValue();
-      } else {
-        return 0;
-      }
+  public int myAtoi(String str) {
+    Pattern p = Pattern.compile("^(\\s*)([+-]?\\d+)(.*)");
+    Matcher m = p.matcher(str);
+    if (m.matches()) {
+      double num = Double.parseDouble(m.group(2));
+      if (num > Integer.MAX_VALUE) return Integer.MAX_VALUE;
+      else if (num < Integer.MIN_VALUE) return Integer.MIN_VALUE;
+      else return (int) num;
     }
+    return 0;
+  }
 }
