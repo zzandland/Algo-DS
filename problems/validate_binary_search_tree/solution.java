@@ -11,33 +11,26 @@
 class Solution {
   public boolean isValidBST(TreeNode root) {
     if (root == null) return true;
-    boolean output = true;
-    if (root.left != null) {
-      output = root.val > root.left.val 
-        && helper(root.left, Long.MIN_VALUE, root.val)
-        && output;
-    }
-    if (root.right != null) {
-      output = root.val < root.right.val
-        && helper(root.right, root.val, Long.MAX_VALUE)
-        && output;
-    }
-    return output;
+    return helper(root, Long.MIN_VALUE, Long.MAX_VALUE);
   }
   
-  public boolean helper(TreeNode node, long low, long high) {
-    if (node.left == null && node.right == null) return true;
-    boolean left = true, right = true;
-    if (node.left != null) {
-      left = node.val > node.left.val 
-        && node.left.val > low
-        && helper(node.left, low, node.val); 
+  public boolean helper(TreeNode root, long minLimit, long maxLimit) {
+    if (root.left != null) {
+      if (!
+        (root.val > root.left.val 
+          && minLimit < root.left.val 
+          && helper(root.left, minLimit, root.val)
+        )
+      ) return false;      
     }
-    if (node.right != null) {
-      right = node.val < node.right.val 
-        && node.right.val < high 
-        && helper(node.right, node.val, high);
-    } 
-    return left && right;
+    if (root.right != null) {
+      if (!
+        (root.val < root.right.val 
+          && maxLimit > root.right.val 
+          && helper(root.right, root.val, maxLimit)
+        ) 
+      ) return false;
+    }
+    return true;
   }
 }
