@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
@@ -7,73 +9,59 @@
  *     TreeNode(int x) { val = x; }
  * }
  */
-class MyQueue {
-  private static class QueueNode<TreeNode> {
-    private TreeNode data;
-    private QueueNode<TreeNode> next;
-    public QueueNode(TreeNode data) {
-      this.data = data;
-    }
-  }  
-  
-  private QueueNode<TreeNode> first;
-  private QueueNode<TreeNode> last;
-  private int size = 0;
-
-  public void enqueue(TreeNode node) {
-    size++;
-    QueueNode<TreeNode> t = new QueueNode<TreeNode>(node);
-    if (last != null) last.next = t;
-    last = t;
-    if (first == null) first = last;
-  }
-
-  public TreeNode dequeue() {
-    size--;
-    TreeNode item = first.data;
-    first = first.next;
-    if (first == null) last = null;
-    return item;
-  }
-  
-  public boolean isEmpty() {
-    return first == null;
-  }
-  
-  public int getSize() {
-    return size;
+class Solution {
+  public boolean isSymmetric(TreeNode root) throws IllegalStateException {
+    if (root == null) return true;
+    MyQueue<TreeNode> q = new MyQueue<TreeNode>();
+    q.enqueue(root.left);
+    q.enqueue(root.right);
+    while (!q.isEmpty()) {
+      TreeNode left = q.dequeue();
+      TreeNode right = q.dequeue();
+      if (left == null && right == null) continue;
+      if (left == null || right == null) return false;
+      if (left.val != right.val) return false;
+      q.enqueue(left.left);
+      q.enqueue(right.right);
+      q.enqueue(left.right);
+      q.enqueue(right.left);
+    }    
+    return true;
   }
 }
 
-class Solution {
-  public boolean isPalindrome(ArrayList<TreeNode> list) {
-    for (int i = 0; i < list.size() / 2; i++) {
-      if (list.get(i) == null && list.get(list.size() - 1 - i) == null) continue;
-      if ((list.get(i) == null || list.get(list.size() - 1 - i) == null)
-        || list.get(i).val != list.get(list.size() - 1 - i).val) return false;
-    }
-    return true;
+class MyQueue<T> {
+  private static class QueueNode<T> {
+    T data;
+    QueueNode<T> next;
+    public QueueNode(T data) { this.data = data; }
   }
-
-  public boolean isSymmetric(TreeNode root) {
-    if (root == null) return true;
-    MyQueue queue = new MyQueue();
-    ArrayList<TreeNode> list;
-    TreeNode item;
-    queue.enqueue(root);
-    while (!queue.isEmpty()) {
-      list = new ArrayList<TreeNode>();
-      int size = queue.getSize();
-      for (int i = 0; i < size; i++) {
-        item = queue.dequeue();
-        list.add(item);
-        if (item != null) queue.enqueue(item.left);
-        if (item != null) queue.enqueue(item.right);
-      }
-      if (!isPalindrome(list)) {
-        return false;
-      } 
-    }
-    return true;
+  
+  private QueueNode<T> head = null;
+  private QueueNode<T> tail = null;
+  int size = 0;
+  
+  public void enqueue(T data) {
+    QueueNode<T> node = new QueueNode<T>(data);
+    if (tail != null) tail.next = node;
+    tail = node;
+    if (head == null) head = tail;
+    size++;
   }
+  
+  public T dequeue() throws IllegalStateException {
+    if (isEmpty()) throw new IllegalStateException("The queue is empty");
+    QueueNode<T> temp = head;
+    head = head.next;
+    if (head == null) tail = null;
+    size--;
+    return temp.data;
+  }
+  
+  public T peek() throws IllegalStateException { 
+    if (isEmpty()) throw new IllegalStateException("The queue is empty");
+    return head.data; 
+  }
+  
+  public boolean isEmpty() { return head == null; }
 }
