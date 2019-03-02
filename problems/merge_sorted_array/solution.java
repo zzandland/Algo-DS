@@ -1,39 +1,16 @@
 class Solution {
   public void merge(int[] nums1, int m, int[] nums2, int n) {
-    if (n == 0) return;
-    if (m == 0) {
-      copy(0, nums1, nums2);
-      return;
-    } 
-    for (int i = 0; i < nums1.length; i++) {
-      if (i >= m) {
-        copy(i, nums1, nums2);
-        return; 
-      }
-      if (nums1[i] > nums2[0]) {
-        int temp = nums1[i];
-        nums1[i] = nums2[0];
-        nums2[0] = temp;
-        sort(nums2);
+    int p1 = m - 1;
+    int p2 = n - 1;
+    int tail = nums1.length - 1;
+    
+    while (p2 >= 0) {
+      if (p1 < 0) {
+        nums1[tail--] = nums2[p2--];
+        continue;
       } 
-    }
-  }
-  
-  private void copy(int offset, int[] nums1, int[] nums2) {
-    for (int i = 0; offset < nums1.length; i++, offset++) {
-      nums1[offset] = nums2[i];
-    }
-  }
-  
-  private void sort(int[] nums) {
-    for (int i = 0; i < nums.length - 1; i++) {
-      if (nums[i] > nums[i + 1]) {
-        int temp = nums[i];
-        nums[i] = nums[i + 1];
-        nums[i + 1] = temp;
-      } else {
-        break;
-      }
+      if (nums1[p1] > nums2[p2]) nums1[tail--] = nums1[p1--];
+      else nums1[tail--] = nums2[p2--];
     }
   }
 }
