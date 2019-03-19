@@ -3,7 +3,7 @@
 
 #include <vector>
 
-class HeapSort {
+class Heapsort {
  public:
   static void Sort(std::vector<int>& arr);
 

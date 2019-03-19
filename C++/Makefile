@@ -1,7 +1,7 @@
 
 test: main.o
 	+${MAKE} -C sorting
-	g++ main.o heapsort.o -o test
+	g++ main.o quicksort.o -o test
 
 main.o: main.cpp
 	g++ -c main.cpp

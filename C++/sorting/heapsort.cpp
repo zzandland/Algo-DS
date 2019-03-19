@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-void HeapSort::Sort(std::vector<int>& arr) {
+void Heapsort::Sort(std::vector<int>& arr) {
   BuildHeap(arr);
 
   for (int i = arr.size() - 1; i >= 0; --i) {
@@ -12,7 +12,7 @@ void HeapSort::Sort(std::vector<int>& arr) {
   }
 }
 
-void HeapSort::Heapify(std::vector<int>& arr, int index, int delimiter) {
+void Heapsort::Heapify(std::vector<int>& arr, int index, int delimiter) {
   int left = 2 * index + 1;
   int right = 2 * index + 2;
   int largest = index;
@@ -29,7 +29,7 @@ void HeapSort::Heapify(std::vector<int>& arr, int index, int delimiter) {
   }
 }
 
-void HeapSort::BuildHeap(std::vector<int>& arr) {
+void Heapsort::BuildHeap(std::vector<int>& arr) {
   int len = arr.size();
   for (int i = len / 2 - 1; i >= 0; --i) {
     Heapify(arr, i, len);
