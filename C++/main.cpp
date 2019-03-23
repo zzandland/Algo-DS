@@ -2,6 +2,7 @@
 #include "printFunc.h"
 #include "sorting/heapsort.h"
 #include "sorting/quicksort.h"
+#include "sorting/mergesort.h"
 
 int main(void)
 {
@@ -9,7 +10,7 @@ int main(void)
 
   printArr<int>(arr, "Before sorting:");
 
-  Heapsort<int>::Sort(arr);
+  Mergesort<int>::Sort(arr);
 
   printArr<int>(arr, "After sorting:");
 
