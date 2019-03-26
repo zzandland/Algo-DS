@@ -12,7 +12,7 @@ int main(void) {
 
   std::vector<int> arr;
 
-  for (int i = 0; i < 100000; ++i)
+  for (int i = 0; i < 1000000; ++i)
     arr.push_back(ran_num(generator));
 
   void (*sorting)(char type, std::vector<int>& arr);
