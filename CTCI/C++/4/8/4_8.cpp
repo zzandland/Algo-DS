@@ -12,11 +12,10 @@ int main(void)
   root->right_ = new Node<char>('C');
   root->right_->right_ = new Node<char>('O');
 
-  Node<char>* node1 = root->right_->right_;
+  Node<char>* node1 = root->left_->right_->left_;
   Node<char>* node2 = root->left_->right_->right_->left_;
 
-  Node<char>* ans = nullptr;
-  root->FirstCommonAncestor(root, node1, node2, ans);
+  Node<char>* ans = root->CommonAncestor(root, node1, node2);
   std::cout << ans->data_ << std::endl;
 
   delete root;
