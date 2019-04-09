@@ -32,8 +32,10 @@ class BST {
   Node* DeleteNodeHelper(Node* node, T data);
   Node* FindHelper(Node* node, T data) const;
   bool ValidateBSTHelper(Node* node, T* low, T* high);
-  void SequencesHelper(Node* node, std::vector<T>& arr,
+  void SequencesHelper(std::vector<Node*> pool, std::vector<T>& arr,
                        std::vector<std::vector<T>>& output);
+  void Swapper(Node* target, std::vector<Node*> pool, std::vector<T>& arr,
+               std::vector<std::vector<T>>& output);
 };
 
 template <class T>
@@ -146,28 +148,35 @@ template <class T>
 std::vector<std::vector<T>> BST<T>::Sequences() {
   std::vector<std::vector<T>> output;
   std::vector<T> arr;
-  SequencesHelper(root_, arr, output);
+  std::vector<Node*> pool = {root_};
+  SequencesHelper(pool, arr, output);
   return output;
 }
 
 template <class T>
-void BST<T>::SequencesHelper(Node* node, std::vector<T>& arr,
+void BST<T>::SequencesHelper(std::vector<Node*> pool, std::vector<T>& arr,
                              std::vector<std::vector<T>>& output) {
-  arr.push_back(node->data_);
-  if (node->left_ == nullptr && node->right_ == nullptr) {
-    std::vector<T> arr_copy(arr);
-    output.push_back(arr_copy);
+  if (pool.empty()) {
+    std::vector<T> temp(arr);
+    output.push_back(temp);
     return;
   }
 
-  if (node->left_ != nullptr) {
-    SequencesHelper(node->left_, arr, output);
-    arr.pop_back();
-  }
+  for (size_t i = 0; i < pool.size(); ++i) Swapper(pool[i], pool, arr, output);
+}
 
-  if (node->right_ != nullptr) {
-    SequencesHelper(node->right_, arr, output);
-    arr.pop_back();
+template <class T>
+void BST<T>::Swapper(Node* target, std::vector<Node*> pool, std::vector<T>& arr,
+                     std::vector<std::vector<T>>& output) {
+  for (size_t i = 0; i < pool.size(); ++i) {
+    if (pool[i] == target) {
+      arr.push_back(target->data_);
+      pool.erase(pool.begin() + i);
+      if (target->left_ != nullptr) pool.push_back(target->left_);
+      if (target->right_ != nullptr) pool.push_back(target->right_);
+      SequencesHelper(pool, arr, output);
+      arr.pop_back();
+    }
   }
 }
 
