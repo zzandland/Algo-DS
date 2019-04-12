@@ -15,8 +15,8 @@ int main(void) {
   bst->InsertNode(9);
   // std::cout << bst->ValidateBST() << std::endl;
 
-  std::vector<std::vector<int>> seqs = bst->Sequences();
-  for (std::vector<int> seq : seqs) {
+  std::vector<std::list<int>> seqs = bst->Sequences2();
+  for (std::list<int> seq : seqs) {
     for (int data : seq)
       std::cout << data << " ";
     std::cout << std::endl;

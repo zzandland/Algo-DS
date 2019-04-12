@@ -2,6 +2,7 @@
 #define BST_H
 
 #include <iostream>
+#include <list>
 #include <vector>
 
 template <class T>
@@ -24,6 +25,7 @@ class BST {
   Node* Find(T data) const;
   bool ValidateBST();
   std::vector<std::vector<T>> Sequences();
+  std::vector<std::list<T>> Sequences2();
 
  private:
   Node* root_;
@@ -36,6 +38,8 @@ class BST {
                        std::vector<std::vector<T>>& output);
   void Swapper(Node* target, std::vector<Node*> pool, std::vector<T>& arr,
                std::vector<std::vector<T>>& output);
+  std::vector<std::list<T>> Sequences2Helper(Node* node);
+  void Weave(std::list<T>& left, std::list<T>& right, std::list<T>& preset, std::vector<std::list<T>>& output);
 };
 
 template <class T>
@@ -178,6 +182,52 @@ void BST<T>::Swapper(Node* target, std::vector<Node*> pool, std::vector<T>& arr,
       arr.pop_back();
     }
   }
+}
+
+template <class T>
+std::vector<std::list<T>> BST<T>::Sequences2() {
+  return Sequences2Helper(root_);
+}
+
+template <class T>
+std::vector<std::list<T>> BST<T>::Sequences2Helper(Node* node) {
+  std::vector<std::list<T>> output;
+  if (node == nullptr) {
+    output.push_back(std::list<T>());
+    return output;
+  }
+  std::vector<std::list<T>> left_seqs = Sequences2Helper(node->left_);
+  std::vector<std::list<T>> right_seqs = Sequences2Helper(node->right_);
+  std::list<T> preset = {node->data_};
+  for (std::list<T> left_seq : left_seqs)
+    for (std::list<T> right_seq : right_seqs)
+      Weave(left_seq, right_seq, preset, output);
+  return output;
+}
+
+template <class T>
+void BST<T>::Weave(std::list<T>& left, std::list<T>& right, std::list<T>& preset, std::vector<std::list<T>>& output) {
+  if (left.size() == 0 || right.size() == 0) {
+    std::list<T> temp = {preset};
+    temp.insert(temp.end(), left.begin(), left.end());
+    temp.insert(temp.end(), right.begin(), right.end());
+    output.push_back(temp);
+    return;
+  }
+
+  T left_head = left.front();
+  left.pop_front();
+  preset.push_back(left_head);
+  Weave(left, right, preset, output);
+  preset.pop_back();
+  left.push_front(left_head);
+
+  T right_head = right.front();
+  right.pop_front();
+  preset.push_back(right_head);
+  Weave(left, right, preset, output);
+  preset.pop_back();
+  right.push_front(right_head);
 }
 
 #endif /* BST_H */
