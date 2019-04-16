@@ -1,0 +1,1 @@
+For n and (n - 1) to share no common bits, n must have only one '1' bit at the most significant digit then the rest should be just '0' bits. This way, when 1 is subtracted, it loses the most significant digit. Thus, (n & (n - 1) == 0) signifies that n is a factor of 2.
