@@ -7,12 +7,15 @@ class Player;
 
 class BlackJack {
  public:
-  BlackJack(Player* p1, Player* p2);
-  void GiveCardToPlayer(Player* player);
-  int CalculatePoint(Player* player);
+  BlackJack();
   virtual ~BlackJack();
+  void InitGame();
 
  private:
+  bool TakeTurn();
+  bool AITurn();
+  void GiveCardToPlayer(Player* player);
+  int CalculatePoint(Player* player);
   void CalculatePointHelper(int nOfA, int current, int objective, int& closest);
   Deck* deck_;
   Player* p1_;
@@ -21,13 +24,13 @@ class BlackJack {
 
 class Player {
  public:
-  Player(std::string name);
+  Player();
   void AddCard(PlayingCard* card);
   std::vector<PlayingCard*> GetHands();
+  void PrintHands();
 
  private:
   int score_;
-  std::string name_;
   std::vector<PlayingCard*> hands_;
 };
 

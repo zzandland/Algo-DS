@@ -2,13 +2,64 @@
 #include <cmath>
 #include "BlackJack.h"
 
-BlackJack::BlackJack(Player* p1, Player* p2) : p1_(p1), p2_(p2) {
+BlackJack::BlackJack() : p1_(new Player()), p2_(new Player()) {
   deck_ = new Deck(false);
 }
 
 BlackJack::~BlackJack() {
   delete deck_;
+  delete p1_;
+  delete p2_;
   p1_ = p2_ = nullptr;
+  deck_ = nullptr;
+}
+
+void BlackJack::InitGame() {
+  bool ongoing = true;
+  GiveCardToPlayer(p1_);
+  GiveCardToPlayer(p2_);
+  while (ongoing && CalculatePoint(p1_) < 22 && CalculatePoint(p2_) < 22)
+    ongoing = TakeTurn();
+  int p1_total = CalculatePoint(p1_);
+  int p2_total = CalculatePoint(p2_);
+  std::cout << "You have ";
+  p1_->PrintHands();
+  std::cout << "Computer has ";
+  p2_->PrintHands();
+  if ((p1_total > 21 && p2_total > 21) || p1_total == p2_total)
+    std::cout << "Draw";
+  else if (p1_total > 21)
+    std::cout << "You lost";
+  else if (p2_total > 21)
+    std::cout << "You won";
+  else if (p1_total < p2_total)
+    std::cout << "You lost";
+  else if (p1_total > p2_total)
+    std::cout << "You won";
+}
+
+bool BlackJack::TakeTurn() {
+  bool AI_drew_card = AITurn();
+  std::cout << "You have ";
+  p1_->PrintHands();
+  std::string input = "";
+  std::cout << "\nDo you want to draw another card? (Y/N): ";
+  if (!std::getline(std::cin, input)) exit(1);
+  if (input == "Y" || input == "y") {
+    GiveCardToPlayer(p1_);
+  } else if ((input == "N" || input == "n") && !AI_drew_card) {
+    return false;
+  }
+  return true;
+}
+
+bool BlackJack::AITurn() {
+  if (CalculatePoint(p2_) < 18) {
+    std::cout << "Computer drew a card." << std::endl;
+    GiveCardToPlayer(p2_);
+    return true;
+  }
+  return false;
 }
 
 void BlackJack::GiveCardToPlayer(Player* player) {
@@ -65,10 +116,13 @@ void BlackJack::CalculatePointHelper(int nOfA, int current, int objective,
   CalculatePointHelper(nOfA - 1, current + 1, objective, closest);
 }
 
-Player::Player(std::string name) : name_(name) { score_ = 0; }
+Player::Player() { score_ = 0; }
 
-void Player::AddCard(PlayingCard* card) {
-  hands_.push_back(card);
-}
+void Player::AddCard(PlayingCard* card) { hands_.push_back(card); }
 
 std::vector<PlayingCard*> Player::GetHands() { return hands_; }
+
+void Player::PrintHands() {
+  for (PlayingCard* card : hands_) std::cout << *card << " ";
+  std::cout << std::endl;
+}

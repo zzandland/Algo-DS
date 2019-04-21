@@ -12,7 +12,7 @@ std::vector<std::string> PlayingCard::FaceUp() {
 }
 
 std::ostream& operator<<(std::ostream& ostr, const PlayingCard& card) {
-  ostr << card.court_ << " " << card.rank_;
+  ostr << card.court_ << card.rank_;
   return ostr;
 }
 
