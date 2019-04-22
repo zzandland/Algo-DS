@@ -5,6 +5,20 @@
 
 class Player;
 
+class BlackJackCard : public PlayingCard {
+ public:
+  BlackJackCard(Rank rank, Suit suit);
+  virtual ~BlackJackCard();
+  int Score();
+  bool IsAce();
+};
+
+class BlackJackHand : public Hand<BlackJackCard> {
+ public:
+  int Score();
+  void GetPossibleHands(size_t i, int score, int& max_score);
+};
+
 class BlackJack {
  public:
   BlackJack();
@@ -14,24 +28,20 @@ class BlackJack {
  private:
   bool TakeTurn();
   bool AITurn();
-  void GiveCardToPlayer(Player* player);
-  int CalculatePoint(Player* player);
-  void CalculatePointHelper(int nOfA, int current, int objective, int& closest);
-  Deck* deck_;
-  Player* p1_;
-  Player* p2_;
+  void GiveCard(Player* player);
+  Deck<BlackJackCard>* deck_;
+  Player* player_;
+  Player* computer_;
 };
 
 class Player {
  public:
-  Player();
-  void AddCard(PlayingCard* card);
-  std::vector<PlayingCard*> GetHands();
-  void PrintHands();
+  void AddCard(BlackJackCard* card);
+  int Score();
+  void PrintHand();
 
  private:
-  int score_;
-  std::vector<PlayingCard*> hands_;
+  BlackJackHand hand_;
 };
 
 #endif /* BLACKJACK_H */

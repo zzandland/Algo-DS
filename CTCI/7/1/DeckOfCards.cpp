@@ -1,77 +1,53 @@
 #include <algorithm>
 #include "DeckOfCards.h"
 
-PlayingCard::PlayingCard(std::string rank, std::string court) : rank_(rank), court_(court) {
-  face_down_ = true;
-}
+PlayingCard::PlayingCard(Rank rank, Suit suit)
+    : rank_((int)rank), suit_(suit) {}
 
-std::vector<std::string> PlayingCard::FaceUp() {
-  face_down_ = false;
-  std::vector<std::string> pair = {court_, rank_};
-  return pair;
+PlayingCard::operator Suit() { return suit_; }
+
+std::string PlayingCard::to_string() const {
+  std::string rank, suit;
+
+  switch (rank_) {
+    case 0:
+      rank = "Joker";
+      break;
+    case 1:
+      rank = "A";
+      break;
+    case 11:
+      rank = "J";
+      break;
+    case 12:
+      rank = "Q";
+      break;
+    case 13:
+      rank = "K";
+      break;
+    default:
+      rank = std::to_string(rank_);
+  }
+
+  switch (suit_) {
+    case CLUB:
+      suit = "♣";
+      break;
+    case DIAMOND:
+      suit = "♦";
+      break;
+    case HEART:
+      suit = "♥";
+      break;
+    case SPADE:
+      suit = "♠";
+      break;
+  }
+
+  return rank + suit;
 }
 
 std::ostream& operator<<(std::ostream& ostr, const PlayingCard& card) {
-  ostr << card.court_ << card.rank_;
+  ostr << card.to_string();
   return ostr;
-}
-
-Deck::Deck(bool joker_in) { InitDeck(joker_in); }
-
-PlayingCard* Deck::HandOutACard() {
-  if (unknown_deck_.empty()) ReuseUsed();
-  PlayingCard* out = unknown_deck_.back();
-  unknown_deck_.pop_back();
-  used_deck_.push_back(out);
-  return out;
-}
-
-void Deck::PrintDeck() const {
-  for (PlayingCard* card : unknown_deck_) {
-    std::cout << *card << std::endl;
-  }
-}
-
-void Deck::InitDeck(bool joker_in) {
-  GenerateCourts("A");
-  GenerateCourts("2");
-  GenerateCourts("3");
-  GenerateCourts("4");
-  GenerateCourts("5");
-  GenerateCourts("6");
-  GenerateCourts("7");
-  GenerateCourts("8");
-  GenerateCourts("9");
-  GenerateCourts("10");
-  GenerateCourts("J");
-  GenerateCourts("Q");
-  GenerateCourts("K");
-  if (joker_in) {
-    unknown_deck_.push_back(new PlayingCard("Joker", "Black"));
-    unknown_deck_.push_back(new PlayingCard("Joker", "Color"));
-  }
-  ShuffleDeck();
-}
-
-void Deck::GenerateCourts(std::string rank) {
-  unknown_deck_.push_back(new PlayingCard(rank, "♥"));
-  unknown_deck_.push_back(new PlayingCard(rank, "♦"));
-  unknown_deck_.push_back(new PlayingCard(rank, "♣"));
-  unknown_deck_.push_back(new PlayingCard(rank, "♠"));
-}
-
-void Deck::ShuffleDeck() {
-  std::srand(time(0));
-  for (int i = unknown_deck_.size(); i > 1; --i) {
-    int j = std::rand() % i;
-    std::swap(unknown_deck_[i - 1], unknown_deck_[j]);
-  }
-}
-
-void Deck::ReuseUsed() {
-  std::cout << "Reuse" << std::endl;
-  unknown_deck_.insert(unknown_deck_.end(), used_deck_.begin(),
-                       used_deck_.end());
-  ShuffleDeck();
-  used_deck_.clear();
 }

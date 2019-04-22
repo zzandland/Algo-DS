@@ -2,51 +2,91 @@
 #include <cmath>
 #include "BlackJack.h"
 
-BlackJack::BlackJack() : p1_(new Player()), p2_(new Player()) {
-  deck_ = new Deck(false);
+BlackJackCard::BlackJackCard(Rank rank, Suit suit) : PlayingCard(rank, suit){};
+
+BlackJackCard::~BlackJackCard() {}
+
+int BlackJackCard::Score() {
+  if (IsAce()) return 1;
+  switch (rank_) {
+    case 11:
+    case 12:
+    case 13:
+      return 10;
+      break;
+    default:
+      return rank_;
+      break;
+  }
+}
+
+bool BlackJackCard::IsAce() { return rank_ == 1; }
+
+int BlackJackHand::Score() {
+  int max_score = 0;
+  GetPossibleHands(0, 0, max_score);
+  return max_score;
+}
+
+void BlackJackHand::GetPossibleHands(size_t i, int score, int& max_score) {
+  if (i == hand_.size()) {
+    if (score < 22 && score > max_score) max_score = score;
+    return;
+  }
+  BlackJackCard* card = hand_[i];
+  if (card->IsAce()) {
+    GetPossibleHands(i + 1, score + 1, max_score);
+    GetPossibleHands(i + 1, score + 11, max_score);
+  } else {
+    GetPossibleHands(i + 1, score + card->Score(), max_score);
+  }
+}
+
+BlackJack::BlackJack() : player_(new Player()), computer_(new Player()) {
+  deck_ = new Deck<BlackJackCard>(false);
 }
 
 BlackJack::~BlackJack() {
-  delete deck_;
-  delete p1_;
-  delete p2_;
-  p1_ = p2_ = nullptr;
+  delete player_;
+  delete computer_;
+  player_ = computer_ = nullptr;
   deck_ = nullptr;
 }
 
 void BlackJack::InitGame() {
   bool ongoing = true;
-  GiveCardToPlayer(p1_);
-  GiveCardToPlayer(p2_);
-  while (ongoing && CalculatePoint(p1_) < 22 && CalculatePoint(p2_) < 22)
+  GiveCard(player_);
+  GiveCard(computer_);
+  while (ongoing && player_->Score() < 22 && computer_->Score() < 22)
     ongoing = TakeTurn();
-  int p1_total = CalculatePoint(p1_);
-  int p2_total = CalculatePoint(p2_);
+  int player_score = player_->Score();
+  int computer_score = computer_->Score();
   std::cout << "You have ";
-  p1_->PrintHands();
+  player_->PrintHand();
   std::cout << "Computer has ";
-  p2_->PrintHands();
-  if ((p1_total > 21 && p2_total > 21) || p1_total == p2_total)
+  computer_->PrintHand();
+  if ((player_score > 21 && computer_score > 21) ||
+      player_score == computer_score)
     std::cout << "Draw";
-  else if (p1_total > 21)
+  else if (player_score > 21)
     std::cout << "You lost";
-  else if (p2_total > 21)
+  else if (computer_score > 21)
     std::cout << "You won";
-  else if (p1_total < p2_total)
+  else if (player_score < computer_score)
     std::cout << "You lost";
-  else if (p1_total > p2_total)
+  else if (player_score > computer_score)
     std::cout << "You won";
 }
 
 bool BlackJack::TakeTurn() {
   bool AI_drew_card = AITurn();
   std::cout << "You have ";
-  p1_->PrintHands();
+  player_->PrintHand();
   std::string input = "";
   std::cout << "\nDo you want to draw another card? (Y/N): ";
   if (!std::getline(std::cin, input)) exit(1);
   if (input == "Y" || input == "y") {
-    GiveCardToPlayer(p1_);
+    GiveCard(player_);
   } else if ((input == "N" || input == "n") && !AI_drew_card) {
     return false;
   }
@@ -54,75 +94,21 @@ bool BlackJack::TakeTurn() {
 }
 
 bool BlackJack::AITurn() {
-  if (CalculatePoint(p2_) < 18) {
+  if (computer_->Score() < 18) {
     std::cout << "Computer drew a card." << std::endl;
-    GiveCardToPlayer(p2_);
+    GiveCard(computer_);
     return true;
   }
   return false;
 }
 
-void BlackJack::GiveCardToPlayer(Player* player) {
-  PlayingCard* card = deck_->HandOutACard();
+void BlackJack::GiveCard(Player* player) {
+  BlackJackCard* card = deck_->HandOutACard();
   player->AddCard(card);
 }
 
-int BlackJack::CalculatePoint(Player* player) {
-  std::vector<PlayingCard*> hand = player->GetHands();
-  int nOfA = 0;
-  int total = 0;
-  for (PlayingCard* card : hand) {
-    std::string rank = card->FaceUp()[1];
-    if (rank == "A")
-      ++nOfA;
-    else if (rank == "2")
-      total += 2;
-    else if (rank == "3")
-      total += 3;
-    else if (rank == "4")
-      total += 4;
-    else if (rank == "5")
-      total += 5;
-    else if (rank == "6")
-      total += 6;
-    else if (rank == "7")
-      total += 7;
-    else if (rank == "8")
-      total += 8;
-    else if (rank == "9")
-      total += 9;
-    else if (rank == "10")
-      total += 10;
-    else if (rank == "J" || rank == "Q" || rank == "K")
-      total += 10;
-  }
-  int score_A = -1;
-  if (total > 21) {
-    score_A = nOfA;
-  } else {
-    CalculatePointHelper(nOfA, 0, 21 - total, score_A);
-  }
-  return total + score_A;
-}
+void Player::AddCard(BlackJackCard* card) { hand_.AddCard(card); }
 
-void BlackJack::CalculatePointHelper(int nOfA, int current, int objective,
-                                     int& closest) {
-  if (nOfA == 0) {
-    if (current <= objective && current > closest) closest = current;
-    return;
-  }
-  if (objective == closest) return;
-  CalculatePointHelper(nOfA - 1, current + 11, objective, closest);
-  CalculatePointHelper(nOfA - 1, current + 1, objective, closest);
-}
+int Player::Score() { return hand_.Score(); }
 
-Player::Player() { score_ = 0; }
-
-void Player::AddCard(PlayingCard* card) { hands_.push_back(card); }
-
-std::vector<PlayingCard*> Player::GetHands() { return hands_; }
-
-void Player::PrintHands() {
-  for (PlayingCard* card : hands_) std::cout << *card << " ";
-  std::cout << std::endl;
-}
+void Player::PrintHand() { std::cout << hand_; }
