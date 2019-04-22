@@ -57,20 +57,22 @@ void BlackJack::InitGame() {
   bool ongoing = true;
   GiveCard(player_);
   GiveCard(computer_);
-  while (ongoing && player_->Score() < 22 && computer_->Score() < 22)
+  do {
     ongoing = TakeTurn();
+  } while (ongoing && (player_->Score() < 22 && player_->Score() != 0) &&
+           (computer_->Score() < 22 && computer_->Score() != 0));
   int player_score = player_->Score();
   int computer_score = computer_->Score();
   std::cout << "You have ";
   player_->PrintHand();
   std::cout << "Computer has ";
   computer_->PrintHand();
-  if ((player_score > 21 && computer_score > 21) ||
+  if ((player_score == 0 && computer_score == 0) ||
       player_score == computer_score)
     std::cout << "Draw";
-  else if (player_score > 21)
+  else if (player_score == 21)
     std::cout << "You lost";
-  else if (computer_score > 21)
+  else if (computer_score == 21)
     std::cout << "You won";
   else if (player_score < computer_score)
     std::cout << "You lost";
