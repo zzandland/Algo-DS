@@ -23,6 +23,8 @@ int GetMaxProfitMemoize(std::vector<int>& profits, std::vector<int>& weights,
                         std::vector<std::vector<int>>& dp);
 int GetMaxProfitBottomUp(std::vector<int>& profits, std::vector<int>& weights,
                          std::vector<std::vector<int>>& dp);
+void PrintSelectedElements(std::vector<int>& weights,
+                           std::vector<std::vector<int>>& dp);
 int TotalWeight(const std::list<Item*>& items);
 int TotalProfit(const std::list<Item*>& items);
 
@@ -41,7 +43,7 @@ int main(void) {
   // std::cout << std::endl;
   // highest_profit = GetItemsMaxProfit(items, 6);
   // for (Item* i : highest_profit) std::cout << i->name << " ";
-  std::cout << GetMaxProfit(items, 7, Method::BOTTOM_UP);
+  std::cout << GetMaxProfit(items, 6, Method::BOTTOM_UP);
   return 0;
 };
 
@@ -101,14 +103,31 @@ int GetMaxProfitBottomUp(std::vector<int>& profits, std::vector<int>& weights,
         dp[i][cap] = (size_t)weights[i] <= cap ? profits[i] : 0;
       } else {
         if ((size_t)weights[i] <= cap) {
-          dp[i][cap] = profits[i] + dp[i - 1][cap - weights[i]];
+          dp[i][cap] = std::max(dp[i - 1][cap], profits[i] + dp[i - 1][cap - weights[i]]);
         } else {
           dp[i][cap] = dp[i - 1][cap];
         }
       }
     }
   }
+  PrintSelectedElements(weights, dp);
   return dp[dp.size() - 1][dp[0].size() - 1];
+};
+
+void PrintSelectedElements(std::vector<int>& weights,
+                           std::vector<std::vector<int>>& dp) {
+  size_t index = dp.size() - 1;
+  size_t cap = dp[0].size() - 1;
+  std::cout << "Selected items are: ";
+  while (cap > 0) {
+    if (dp[index][cap] != dp[index - 1][cap]) {
+      cap -= weights[index];
+      char item = index + 'A';
+      std::cout << item << " ";
+    }
+    --index;
+  };
+  std::cout << std::endl;
 };
 
 std::set<Item*> GetItemsMaxProfit(std::set<Item*>& items, int capacity) {
