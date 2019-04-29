@@ -11,7 +11,7 @@ int Memoize(std::vector<int>& lengths, std::vector<int>& prices,
             int total_length, size_t i, std::vector<std::vector<int>>& dp);
 int BU(std::vector<int>& lengths, std::vector<int>& prices, int total_length,
        std::vector<std::vector<int>>& dp);
-int PrintSelected(std::vector<int>& lengths, std::vector<int>& prices, std::vector<std::vector<int>>& dp);
+void PrintSelected(std::vector<int>& lengths, std::vector<int>& prices, std::vector<std::vector<int>>& dp);
 
 int main(void) {
   std::vector<int> lengths = {1, 2, 3, 4, 5};
@@ -61,21 +61,19 @@ int Memoize(std::vector<int>& lengths, std::vector<int>& prices,
 
 int BU(std::vector<int>& lengths, std::vector<int>& prices, int total_length,
        std::vector<std::vector<int>>& dp) {
-  for (size_t i = 0; i < lengths.size(); ++i)
-    dp[i][0] = 0;
-  for (int s = 1; s <= total_length; ++s)
-    dp[0][s] = prices[0] * (s / lengths[0]);
-  for (size_t i = 1; i < lengths.size(); ++i) {
-    for (int s = 1; s <= total_length; ++s) {
-      int new_price = prices[i] * (s / lengths[i]) + dp[i - 1][s % lengths[i]];
-      dp[i][s] = std::max(dp[i - 1][s], new_price);
+  for (size_t i = 0; i < lengths.size(); ++i) {
+    for (int s = 0; s <= total_length; ++s) {
+      int len1 = 0, len2 = 0;
+      if (s >= lengths[i]) len1 = prices[i] + dp[i][s - lengths[i]];
+      if (i > 0) len2 = dp[i - 1][s];
+      dp[i][s] = std::max(len1, len2);
     }
   }
   PrintSelected(lengths, prices, dp);
   return dp[lengths.size() - 1][total_length];
 };
 
-int PrintSelected(std::vector<int>& lengths, std::vector<int>& prices, std::vector<std::vector<int>>& dp) {
+void PrintSelected(std::vector<int>& lengths, std::vector<int>& prices, std::vector<std::vector<int>>& dp) {
   int i = dp.size() - 1;
   int s = dp[0].size() - 1;
   std::cout << "Selected lengths are: ";
