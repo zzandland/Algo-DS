@@ -18,11 +18,12 @@ int BU(std::vector<int>& weights, std::vector<int>& profits, int capacity, std::
 
 int main(void) {
   Item apple = {15, 1};
-  Item orange = {20, 2};
-  Item melon = {50, 3};
-  std::vector<Item*> items = {&apple, &orange, &melon};
+  Item orange = {50, 3};
+  Item melon = {60, 4};
+  Item melon2 = {90, 5};
+  std::vector<Item*> items = {&apple, &orange, &melon, &melon2};
   Method m = Method::BU;
-  std::cout << Wrapper(items, 5, m);
+  std::cout << Wrapper(items, 8, m) << ":" << Wrapper(items, 6, m);
   return 0;
 }
 
