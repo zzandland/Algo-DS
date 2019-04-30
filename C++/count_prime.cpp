@@ -17,13 +17,13 @@ int CountPrime::Legendre(size_t n) {
   std::vector<int> primes = GetNthPrime(a);
   std::cout << primes.size();
   return a + Phi(n, a, primes) - 1;
-}
+};
 
 int CountPrime::Phi(size_t n, int a, std::vector<int> &primes) {
   if (a == 1)
     return (n + 1) / 2;
   return Phi(n, a - 1, primes) - Phi(n / primes[a - 1], a - 1, primes);
-}
+};
 
 std::vector<int> CountPrime::GetNthPrime(int n) {
   std::vector<int> output = {2};
@@ -41,4 +41,4 @@ std::vector<int> CountPrime::GetNthPrime(int n) {
     }
   } 
   return output;
-}
+};
