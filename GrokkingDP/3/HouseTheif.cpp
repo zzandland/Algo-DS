@@ -11,7 +11,7 @@ int BU(std::vector<int>& houses);
 int main(void) {
   std::vector<int> h1 = {2, 5, 1, 3, 6, 2, 4};
   std::vector<int> h2 = {2, 10, 14, 8, 1, 2, 8, 15, 3, 10, 7, 6, 6, 6, 23, 1};
-  Method m = Method::BU;
+  Method m = Method::MEM;
   std::cout << HouseThief(h1, m) << ":" << HouseThief(h2, m);
   return 0;
 }
@@ -42,10 +42,12 @@ int Memoize(std::vector<int>& houses, size_t i, std::vector<int>& dp) {
 }
 
 int BU(std::vector<int>& houses) {
-  std::vector<int> dp(houses.size() + 1);
-  dp[0] = houses[0];
-  dp[1] = std::max(dp[0], houses[1]);
-  for (size_t i = 2; i < houses.size(); ++i)
-    dp[i] = std::max(dp[i - 1], houses[i] + dp[i - 2]);
-  return dp[houses.size() - 1];
+  int val1 = houses[0];
+  int val2 = std::max(val1, houses[1]);
+  for (size_t i = 2; i < houses.size(); ++i) {
+    int tmp = std::max(val2, houses[i] + val1);
+    val1 = val2;
+    val2 = tmp;
+  }
+  return val2;
 }
