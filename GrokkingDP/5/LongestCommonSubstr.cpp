@@ -51,7 +51,8 @@ int Memoize(std::string str1, std::string str2, size_t i, size_t j, int curr,
   if (dp[i][j][curr] == nullptr) {
     dp[i][j][curr] = new Int();
     int c1 = curr;
-    if (str1[i] == str2[j]) c1 = Memoize(str1, str2, i + 1, j + 1, curr + 1, dp);
+    if (str1[i] == str2[j])
+      c1 = Memoize(str1, str2, i + 1, j + 1, curr + 1, dp);
     int c2 = Memoize(str1, str2, i + 1, j, 0, dp);
     int c3 = Memoize(str1, str2, i, j + 1, 0, dp);
     dp[i][j][curr]->val = std::max(c1, std::max(c2, c3));
@@ -60,15 +61,17 @@ int Memoize(std::string str1, std::string str2, size_t i, size_t j, int curr,
 }
 
 int BU(std::string str1, std::string str2) {
-  int len1 = str1.length() + 1;
-  int len2 = str2.length() + 1;
+  int len1 = str1.length();
+  int len2 = str2.length();
   int max_len = 0;
-  std::vector<std::vector<int>> dp(len1, std::vector<int>(len2));
+  std::vector<int> dp(len2 + 1);
   for (int i = 1; i < len1; ++i) {
-    for (int j = 1; j < len2; ++j) {
-      if (str1[i] == str2[j]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-        max_len = std::max(max_len, dp[i][j]);
+    for (int j = len2; j >= 1; --j) {
+      if (str1[i] == str2[j - 1]) {
+        dp[j] = dp[j - 1] + 1;
+        max_len = std::max(max_len, dp[j]);
+      } else {
+        dp[j] = 0;
       }
     }
   }
