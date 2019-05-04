@@ -16,7 +16,8 @@ int BU(std::string str1, std::string str2);
 int main(void) {
   Method m = Method::BU;
   std::cout << LongestCommonSubseq("abdca", "cbda", m) << ":"
-            << LongestCommonSubseq("passport", "ppsspt", m);
+            << LongestCommonSubseq("passport", "ppsspt", m) << ":"
+            << LongestCommonSubseq("dynamic", "programming", m);
   return 0;
 }
 
