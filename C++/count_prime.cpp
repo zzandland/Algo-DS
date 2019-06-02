@@ -1,9 +1,8 @@
 #include <iostream>
-#include <vector>
 #include <math.h>
+#include <vector>
 
-class CountPrime
-{
+class CountPrime {
 public:
   static int Legendre(size_t n);
 
@@ -39,6 +38,6 @@ std::vector<int> CountPrime::GetNthPrime(int n) {
       output.push_back(i);
       j++;
     }
-  } 
+  }
   return output;
 };
