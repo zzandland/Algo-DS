@@ -1,23 +1,26 @@
 class Solution:
     def minWindow(self, s: str, t: str) -> str:
-        char_dict = [0] * 256
+        N, M = len(s), len(t)
+        if M > N or M == 0 or N == 0:
+            return ""
+        letters = [0] * 256
         for c in t:
-            char_dict[ord(c)] += 1
-        start, end, min_len, min_start, counter = 0, 0, -1, 0, len(t)
-        while end < len(s):
-            if char_dict[ord(s[end])] > 0:
-                counter -= 1
-            char_dict[ord(s[end])] -= 1    
-            end += 1
-            while counter == 0:
-                if min_len == -1 or end - start < min_len:
+            letters[ord(c)] += 1
+        end, start, count, min_start, min_len = 0, 0, M, 0, float('inf')    
+        while end < N:
+            letters[ord(s[end])] -= 1
+            if letters[ord(s[end])] >= 0:
+                count -= 1
+            end += 1    
+            while count == 0:
+                if end - start < min_len:
                     min_start = start
                     min_len = end - start
-                char_dict[ord(s[start])] += 1    
-                if char_dict[ord(s[start])] > 0:
-                    counter += 1    
+                letters[ord(s[start])] += 1    
+                if letters[ord(s[start])] > 0:
+                    count += 1
                 start += 1    
-        if min_len == -1:
-            return ""
+        if min_len == float('inf'):
+            return ""        
         else:
-            return s[min_start:min_start + min_len]
+            return s[min_start:min_start + min_len]    
