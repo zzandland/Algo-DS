@@ -6,17 +6,12 @@
 
 class Solution:
     def reverseList(self, head: ListNode) -> ListNode:
-        if head is None:
+        if not head:
             return None
-        copy_list = []
-        self.recurse(head, copy_list)
-        return copy_list[0]
-    
-    def recurse(self, head: ListNode, lst: List) -> ListNode:
-        copy = ListNode(head.val)
-        if head.next is None:
-            lst.append(copy)    
-            return copy
-        prev = self.recurse(head.next, lst)
-        prev.next = copy
-        return copy
+        prev, curr, runner = None, head, None
+        while curr:
+            runner = curr.next
+            curr.next = prev
+            prev = curr
+            curr = runner
+        return prev    
