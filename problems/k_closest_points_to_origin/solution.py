@@ -1,12 +1,6 @@
 class Solution:
     def kClosest(self, points: List[List[int]], K: int) -> List[List[int]]:
-        if not points:
-            return []
-        hp = []
-        for y, x in points:
-            dist = math.sqrt(x * x + y * y)
-            heapq.heappush(hp, (dist, [y, x]))
-        output = []    
-        for i in range(K):
-            output.append(heapq.heappop(hp)[1])
-        return output    
+        def compare(a):
+            return math.sqrt(a[0]*a[0] + a[1]*a[1])
+        points.sort(key=lambda x: compare(x))
+        return points[:K]
