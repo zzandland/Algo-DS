@@ -7,18 +7,13 @@
 
 class Solution:
     def diameterOfBinaryTree(self, root: TreeNode) -> int:
-        if root is None:
-            return 0
-        max_d = [0]
-        self.recurse(root, max_d)
-        return max_d[0] - 1
+        max_len = [0]
+        self.helper(root, max_len)
+        return max_len[0]
     
-    def recurse(self, root: TreeNode, max_d: List[int]) -> int:
-        if root is None:
+    def helper(self, node: TreeNode, max_len: List[int]) -> int:
+        if not node:
             return 0
-        left_len = self.recurse(root.left, max_d)
-        right_len = self.recurse(root.right, max_d)
-        diameter = left_len + right_len + 1
-        if diameter > max_d[0]:
-            max_d[0] = diameter
-        return max(left_len, right_len) + 1    
+        l, r = self.helper(node.left, max_len), self.helper(node.right, max_len)
+        max_len[0] = max(max_len[0], l + r)
+        return 1 + max(l, r)
