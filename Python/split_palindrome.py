@@ -1,3 +1,7 @@
+'''
+'''
+
+
 def split_palindrome(str1: str, str2: str) -> bool:
     """
     >>> split_palindrome("abcbbbb", "xxxbcba")

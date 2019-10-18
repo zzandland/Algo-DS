@@ -1,6 +1,6 @@
-import sorting.*;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import sorting.*;
 
 public class Main {
   public static void main(String[] args) {
@@ -36,7 +36,7 @@ public class Main {
     elapsed = System.nanoTime() - start;
 
     // System.out.println("After quicksort: " + copy.toString());
-    
+
     System.out.println("The process took: " + elapsed + " nanosecond.");
   }
 }

@@ -50,7 +50,7 @@ class Solution {
 
  private:
   ListNode* MergeList(ListNode*& output, ListNode*& n) {
-    ListNode* merged = nullptr;
+    ListNode* merged;
     ListNode* head = nullptr;
     while (output != nullptr && n != nullptr) {
       ListNode* temp = nullptr;
