@@ -1,10 +1,15 @@
 class Solution:
-    def plusOne(self, digits: List[int]) -> List[int]:
-        for i in range(len(digits))[::-1]:
-            digits[i] += 1
-            if digits[i] < 10:
-                break
-            digits[i] = 0    
-        if digits[0] == 0:
-            return [1] + digits    
-        else: return digits
+  def plusOne(self, digits: List[int]) -> List[int]:
+    lift = 1
+    output = []
+    for digit in digits[::-1]:
+      digit += lift
+      if digit == 10:
+        digit = 0
+        lift = 1
+      else:
+        lift = 0  
+      output = [digit] + output  
+    if lift == 1:
+      output = [1] + output  
+    return output
