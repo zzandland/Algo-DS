@@ -1,2 +1,5 @@
 .mypy_cache
 .tmp.cpp.run
+node_modules/
+target/
+.ccls-cache/
