@@ -1,6 +1,8 @@
 #include <iostream>
-#include <map>
+#include <set>
 #include <vector>
+
+using namespace std;
 
 /*
  * @lc app=leetcode id=30 lang=cpp
@@ -48,7 +50,7 @@ class Trie {
    public:
     char val_;
     bool end_;
-    std::vector<Node*> children_;
+    vector<Node*> children_;
 
     Node(char val) : val_(val), end_(false), children_(27){};
 
@@ -60,9 +62,9 @@ class Trie {
   };
   Node* root_;
 
-  Trie(std::vector<std::string>& words, std::map<std::string, int>& word_map)
+  Trie(vector<string>& words, map<string, int>& word_map)
       : root_(new Node(' ')) {
-    for (std::string word : words) {
+    for (string word : words) {
       InsertWord(word);
       if (word_map.find(word) == word_map.end())
         word_map.insert({word, 1});
@@ -73,7 +75,7 @@ class Trie {
 
   ~Trie() { delete root_; }
 
-  void InsertWord(std::string word) {
+  void InsertWord(string word) {
     Node* n = root_;
     for (size_t i = 0; i < word.length(); ++i) {
       int index = word[i] - 'a';
@@ -84,8 +86,8 @@ class Trie {
     n->end_ = true;
   }
 
-  std::string FindWord(std::string s, size_t i) {
-    std::string word = "";
+  string FindWord(string s, size_t i) {
+    string word = "";
     Node* n = root_;
     for (; i < s.size(); ++i) {
       if (n->end_) return word;
@@ -100,7 +102,7 @@ class Trie {
     return word;
   }
 
-  void IterateTrie(Node* n, std::string s) {
+  void IterateTrie(Node* n, string s) {
     if (n == nullptr) return;
     s += n->val_;
     if (n->end_) {
@@ -113,29 +115,53 @@ class Trie {
 
 class Solution {
  public:
-  std::vector<int> findSubstring(std::string s,
-                                 std::vector<std::string>& words) {
-    std::vector<int> output;
-    if (words.size() == 0 || s.length() == 0) return output;
-    std::map<std::string, int> word_map_origin;
-    Trie* trie = new Trie(words, word_map_origin);
-    for (size_t i = 0; i < s.length(); ++i) {
-      std::map<std::string, int> word_map = word_map_origin;
-      int j = i;
-      while (!word_map.empty()) {
-        std::string found = trie->FindWord(s, j);
-        if (found != "") {
-          if (word_map.find(found) == word_map.end()) break;
-          word_map[found] -= 1;
-          if (word_map[found] <= 0) word_map.erase(found);
-          j += found.length();
-        } else {
-          break;
-        }
-      }
-      if (word_map.empty()) output.push_back(i);
+  vector<vector<string>> getPerm(vector<string>& words) {
+    vector<vector<string>> output, prev;
+    if (words.size() == 1) {
+      output.push_back(words);
+      return output;
     }
-    delete trie;
+    string word = words.back();
+    words.pop_back();
+    prev = getPerm(words);
+    for (auto perm : prev) {
+      for (int i = 0; i <= perm.size(); ++i) {
+        vector<string> cpy = perm;
+        cpy.insert(cpy.begin() + i, word);
+        output.push_back(cpy);
+      }
+    }
+    return output;
+  }
+
+  set<string> getPermStr(vector<vector<string>>& perms) {
+    set<string> output;
+    for (auto perm : perms) {
+      string s;
+      for (auto st : perm) {
+        s += st;
+      }
+      output.insert(s);
+    }
+    return output;
+  }
+
+  vector<int> findSubstring(string s, vector<string>& words) {
+    if (words.size() == 0) {
+      return vector<int>();
+    }
+    int len = words.size() * (*words.begin()).length();
+    if (s.length() < len) {
+      return vector<int>();
+    }
+    vector<vector<string>> perms = getPerm(words);
+    set<string> strs = getPermStr(perms);
+    vector<int> output;
+    for (int i = 0; i < s.length() - len + 1; ++i) {
+      if (strs.count(s.substr(i, len))) {
+        output.push_back(i);
+      }
+    }
     return output;
   }
 };
