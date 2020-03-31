@@ -1,33 +1,23 @@
+from collections import deque
+
 class Solution:
     def numIslands(self, grid: List[List[str]]) -> int:
-        if len(grid) == 0:
-            return 0
-        visited = []
-        height = len(grid)
-        width = len(grid[0])
-        def valid_coord(y: int, x: int) -> bool:
-            nonlocal height, width    
-            return 0 <= y < height and 0 <= x < width
-        output = 0
-        for i in range(height):
-            for j in range(width):
-                if grid[i][j] == '1':
-                    output += 1
-                    q = collections.deque()
-                    q.append((i, j))
-                    grid[i][j] = '0'
-                    while len(q) > 0:
-                        y, x = q.popleft()
-                        if valid_coord(y + 1, x) is True and grid[y + 1][x] == '1':
-                            grid[y + 1][x] = '0'
-                            q.append((y + 1, x))
-                        if valid_coord(y - 1, x) is True and grid[y - 1][x] == '1':
-                            grid[y - 1][x] = '0'
-                            q.append((y - 1, x))
-                        if valid_coord(y, x + 1) is True and grid[y][x + 1] == '1':
-                            grid[y][x + 1] = '0'
-                            q.append((y, x + 1))
-                        if valid_coord(y, x - 1) is True and grid[y][x - 1] == '1':
-                            grid[y][x - 1] = '0'
-                            q.append((y, x - 1))
-        return output                       
+        if not grid: return 0
+        row, col = len(grid), len(grid[0])
+        checked = [[False for _ in range(col)] for _ in range(row)]
+        directions, count = [(0, 1), (0, -1), (1, 0), (-1, 0)], 0
+        
+        def dfs(y, x):
+            if grid[y][x] == '0' or checked[y][x]: return
+            checked[y][x] = True
+            for r, c in directions:
+                ny, nx = y+r, x+c
+                if 0 <= ny < row and 0 <= nx < col:
+                    dfs(y+r, x+c)
+            
+        for y, r in enumerate(grid):
+            for x, c in enumerate(r):
+                if c == '1' and not checked[y][x]:
+                    count += 1
+                    dfs(y, x)
+        return count                        
