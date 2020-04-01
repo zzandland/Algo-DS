@@ -2,19 +2,16 @@ from collections import defaultdict
 
 class Solution:
     def criticalConnections(self, n: int, connections: List[List[int]]) -> List[List[int]]:
-        ids, lows, graph, output, t = [None]*n, [None]*n, defaultdict(list), [], 0
-        for i, j in connections:
-            graph[i].append(j)
-            graph[j].append(i)
+        ids, lows, id_, graph = [None] * n, [None] * n, 0, defaultdict(list)
+        for frm, to in connections:
+            graph[frm].append(to)
+            graph[to].append(frm)
         def dfs(cur: int, prev: int):
-            nonlocal t
-            ids[cur] = lows[cur] = t
-            t += 1
-            for nxt in graph[cur]:
-                if lows[nxt] == None: dfs(nxt, cur)
-            lows[cur] = min([t]+[lows[nxt_t] for nxt_t in graph[cur] if nxt_t != prev])        
-        dfs(0, -1)
-        for i, j in connections:
-            if ids[i] < lows[j] or ids[j] < lows[i]: output.append([i, j])
-                    
-        return output
+            nonlocal id_
+            ids[cur] = lows[cur] = id_
+            id_ += 1
+            for to in graph[cur]:
+                if lows[to] == None and to != prev: dfs(to, cur)
+            lows[cur] = min([ids[cur]] + [lows[to] for to in graph[cur] if to != prev])
+        dfs(0, -1)    
+        return [[frm, to] for frm, to in connections if ids[frm] < lows[to] or ids[to] < lows[frm]]
