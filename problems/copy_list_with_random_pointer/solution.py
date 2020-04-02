@@ -9,15 +9,16 @@ class Node:
 
 class Solution:
     def copyRandomList(self, head: 'Node') -> 'Node':
-        dic, cur = {}, head
-        dic[None] = None
-        while cur:
-            dic[cur] = Node(cur.val)
-            cur = cur.next
-        cur = head    
-        while cur:
-            n = dic[cur]
-            n.next = dic[cur.next]
-            n.random = dic[cur.random]
-            cur = cur.next
-        return dic[head]    
+        save = { None: None }
+        def fn(n: Node) -> Node:
+            if not n: return
+            if not n in save: 
+                cpy = Node(n.val)
+                save[n] = cpy
+            if n.random and not n.random in save:    
+                randCpy = Node(n.random.val)
+                save[n.random] = randCpy
+            save[n].random = save[n.random]
+            save[n].next = fn(n.next)    
+            return save[n]
+        return fn(head)
