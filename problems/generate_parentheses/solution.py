@@ -1,14 +1,7 @@
 class Solution:
     def generateParenthesis(self, n: int) -> List[str]:
-        output = []
-        def recurse(n: int, diff: int, tmp: str) -> None:
-            nonlocal output
-            if n == 0 and diff == 0:
-                output.append(tmp)
-                return
-            if n > 0:
-                recurse(n - 1, diff + 1, tmp + '(')
-            if diff > 0:
-                recurse(n, diff - 1, tmp + ')')    
-        recurse(n, 0, "")
-        return output
+        def fn(lst: List[str], diff: int) -> List[str]:
+            if len(lst) > n*2 or diff < 0: return []
+            if len(lst) == n*2 and diff == 0: return [''.join(lst)]
+            return fn(lst+['('], diff+1) + fn(lst+[')'], diff-1)
+        return fn([], 0)
