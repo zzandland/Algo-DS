@@ -1,6 +1,3 @@
 class Solution:
     def kClosest(self, points: List[List[int]], K: int) -> List[List[int]]:
-        def compare(a):
-            return math.sqrt(a[0]*a[0] + a[1]*a[1])
-        points.sort(key=lambda x: compare(x))
-        return points[:K]
+        return sorted(points, key=lambda x: x[0]*x[0]+x[1]*x[1])[:K]
