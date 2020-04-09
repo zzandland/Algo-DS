@@ -1,23 +1,12 @@
+from collections import defaultdict 
+
 class Solution:
     def partitionLabels(self, S: str) -> List[int]:
-        output = []
-        if len(S) == 0:
-            return output
-        interval_map = {}
+        last, output = {c: i for i, c in enumerate(S)}, []
+        delim = prev = 0
         for i, c in enumerate(S):
-            if c not in interval_map:
-                interval_map[c] = [i, i]        
-            else:
-                if interval_map[c][1] < i:
-                    interval_map[c][1] = i
-        sorted_intervals = sorted(interval_map.values(), key=lambda x: x[0])                
-        curr = sorted_intervals[0]
-        for k in range(1, len(sorted_intervals)):
-            interval = sorted_intervals[k]
-            if curr[1] > interval[0]:
-                curr[1] = max(curr[1], interval[1])
-            else:
-                output.append(curr[1] - curr[0] + 1)
-                curr = interval
-        output.append(curr[1] - curr[0] + 1)        
-        return output
+            delim = max(last[c], delim)
+            if i == delim: 
+                output.append(i-prev+1)
+                prev = i+1
+        return output        
