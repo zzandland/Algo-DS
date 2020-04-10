@@ -2,16 +2,18 @@ from collections import defaultdict
 
 class Solution:
     def criticalConnections(self, n: int, connections: List[List[int]]) -> List[List[int]]:
-        ids, lows, id_, graph = [None] * n, [None] * n, 0, defaultdict(list)
-        for frm, to in connections:
-            graph[frm].append(to)
-            graph[to].append(frm)
-        def dfs(cur: int, prev: int):
-            nonlocal id_
-            ids[cur] = lows[cur] = id_
-            id_ += 1
-            for to in graph[cur]:
-                if lows[to] == None and to != prev: dfs(to, cur)
-            lows[cur] = min([ids[cur]] + [lows[to] for to in graph[cur] if to != prev])
-        dfs(0, -1)    
-        return [[frm, to] for frm, to in connections if ids[frm] < lows[to] or ids[to] < lows[frm]]
+        graph, cnt = defaultdict(list), 0
+        for a, b in connections:
+            graph[a].append(b)
+            graph[b].append(a)
+        ids, crits = [i for i in range(n)], [None for i in range(n)]
+        def fn(cur: int, prev: int) -> None:
+            nonlocal cnt
+            ids[cur] = crits[cur] = cnt
+            cnt += 1
+            for adj in graph[cur]:
+                if adj != prev and crits[adj] == None: fn(adj, cur)
+            crits[cur] = min([ids[cur]] + [crits[adj] for adj in graph[cur] if adj != prev])
+        fn(0, -1)
+        return [[a, b] for a, b in connections if ids[a] < crits[b] or ids[b] < crits[a]]
+    
