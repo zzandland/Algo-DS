@@ -1,6 +1,7 @@
 class Solution:
     def reorderLogFiles(self, logs: List[str]) -> List[str]:
-        def f(log):
-            id_, rest = log.split(' ', 1)
-            return (0, rest, id_) if rest[0].isalpha() else (1,)
-        return sorted(logs, key=f)
+        def fn(x: str):
+            a, rest = x.split(' ', 1)
+            if rest.split()[0].isdigit(): return (1,)
+            return (0, rest, a)
+        return sorted(logs, key=fn)
