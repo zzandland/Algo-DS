@@ -1,75 +1,60 @@
-from typing import Any
-
-class CacheQueue:
-    class Node:
-        def __init__(self, data: Any):
-            self.data = data
-            self.next = None
-            self.prev = None
-            
-    def __init__(self, capacity: int):
-        self.least = None
-        self.most = None
-        self.q_map = {}
+class Node:
+    def __init__(self, key:int, val: int):
+        self.key = key
+        self.val = val
+        self.prev = self.next = None
         
-    def enque(self, key: int) -> None:
-        node = self.Node(key)
-        self.q_map[key] = node
-        node.prev = self.most
-        if self.most:
-            self.most.next = node 
-        self.most = node    
-        if not self.least:
-            self.least = node
-            
-    def deque(self) -> int:
-        out = self.least
-        self.least = self.least.next
-        if self.least:
-            self.least.prev = None
-        else:
-            self.most = None
-        del self.q_map[out.data]
-        return out.data
+class DLL:
+    def __init__(self):
+        self.head = self.tail = None
+        
+    def appendLeft(self, n: Node) -> None:
+        if self.head: self.head.prev, n.next = n, self.head
+        if self.tail == n: self.tail = self.head    
+        self.head = n    
+        if not self.tail: self.tail = n    
+        
+    def pop(self) -> Node:
+        n = self.tail
+        if self.tail:
+            self.tail.prev.next = None
+            self.tail = self.tail.prev
+        n.prev = None    
+        return n
     
-    def update_q(self, key: int) -> None:
-        node = self.q_map[key]
-        if node is self.least:
-            self.deque()
-            self.enque(node.data)
-        elif node is not self.most:    
-            node.next.prev = node.prev
-            node.prev.next = node.next
-            self.enque(node.data)
-        
-        
+    def popInside(self, n: Node) -> Node:
+        if n.prev: n.prev.next = n.next
+        else: self.head = self.head.next    
+        if n.next: n.next.prev = n.prev
+        else: self.tail = self.tail.prev    
+        n.next = n.prev = None    
+        return n
+
 class LRUCache:
-
     def __init__(self, capacity: int):
-        self.data_map = {}
-        self.q = CacheQueue(capacity)
-        self.capacity = capacity
-        self.size = 0
-
-    def get(self, key: int) -> int:
-        if key in self.data_map:
-            self.q.update_q(key)
-            return self.data_map[key]
-        else:
-            return -1
+        self.capacity = 0
+        self.max = capacity
+        self.dic = {}
+        self.dll = DLL()
         
+    def get(self, key: int) -> int:
+        if key not in self.dic: return -1
+        n = self.dll.popInside(self.dic[key])
+        self.dll.appendLeft(n)
+        return n.val
 
-    def put(self, key: int, value: int) -> None:
-        if key not in self.data_map:
-            if self.size == self.capacity:
-                del self.data_map[self.q.deque()]
-                self.q.enque(key)
-            else:
-                self.size += 1
-                self.q.enque(key)    
-        self.data_map[key] = value
-        self.q.update_q(key)
-
+    def put(self, key: int, val: int) -> None:
+        if key not in self.dic:
+            n = Node(key, val)
+            self.dic[key] = n
+            self.dll.appendLeft(n)
+            if self.capacity == self.max:
+                l = self.dll.pop()
+                del self.dic[l.key]
+            else: self.capacity += 1    
+        else:
+             self.dic[key].val = val       
+             self.get(key)   
 
 # Your LRUCache object will be instantiated and called as such:
 # obj = LRUCache(capacity)
