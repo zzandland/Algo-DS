@@ -17,6 +17,7 @@ from typing import List
 
 t1 = [4,2,3,6,10,1,12]
 t2 = [4,2,5,9,7,6,10,3,1]
+t3 = [5,4,3,2,1]
 
 def td(nums: List[int]) -> int:
     """
@@ -24,6 +25,8 @@ def td(nums: List[int]) -> int:
     5
     >>> td(t2)
     7
+    >>> td(t3)
+    5
     """
     N = len(nums)
     dp = [[[None] * N for _ in range(N)] for _ in range(2)]
@@ -46,6 +49,8 @@ def bu(nums: List[int]) -> int:
     5
     >>> bu(t2)
     7
+    >>> bu(t3)
+    5
     """
     N = len(nums)
     dp = [[1]*N for _ in range(2)]
