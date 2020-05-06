@@ -4,18 +4,18 @@
 #  A three element sequence (a1, a2, a3) will be an alternating sequence if its elements hold one of the following conditions:
 
 #  {a1 > a2 < a3 } or { a1 < a2 > a3}.
-#  Example 1:
 
+#  Example 1:
 #  Input: {1,2,3,4}
 #  Output: 2
 #  Explanation: There are many LAS: {1,2}, {3,4}, {1,3}, {1,4}
-#  Example 2:
 
+#  Example 2:
 #  Input: {3,2,1,4}
 #  Output: 3
 #  Explanation: The LAS are {3,2,4} and {2,1,4}.
-#  Example 3:
 
+#  Example 3:
 #  Input: {1,3,2,4}
 #  Output: 4
 #  Explanation: The LAS is {1,3,2,4}. }
@@ -47,6 +47,7 @@ def td(nums: List[int]) -> int:
                 dp[asc][i][j] = 1 + fn(i+1, i, 1) if nums[i] < nums[j] else max(fn(i, j+1, 0), fn(i+1, j, 0))
         return dp[asc][i][j]
     return max(fn(0, 0, 1), fn(0, 0, 0))
+
 def bu(nums: List[int]) -> int:
     """
     >>> bu(t1)
