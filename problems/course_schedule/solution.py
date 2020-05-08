@@ -1,23 +1,20 @@
-from typing import Dict
+from collections import defaultdict
 
 class Solution:
     def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
-        graph = [[] for _ in range(numCourses)]
-        visit = [0 for _ in range(numCourses)]
-        for x, y in prerequisites:
-            graph[x].append(y)
-        def dfs(i: int) -> bool:
-            if visit[i] == -1:
-                return False
-            if visit[i] == 1:
-                return True
-            visit[i] = -1
-            for j in graph[i]:
-                if not dfs(j):
-                    return False
-            visit[i] = 1   
-            return True
+        graph, visited = defaultdict(list), set()
+        for b, a in prerequisites:
+            graph[a].append(b)
+        def fn(n: int) -> bool:
+            if n in loop: return False
+            loop.add(n)
+            for nxt in graph[n]:
+                if nxt not in visited:
+                    if not fn(nxt): return False
+                    loop.remove(nxt)
+            visited.add(n)
+            return True    
         for i in range(numCourses):
-            if not dfs(i):
-                return False
-        return True    
+            loop = set()
+            if i not in visited and not fn(i): return False
+        return True
