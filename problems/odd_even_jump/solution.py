@@ -1,19 +1,22 @@
 class Solution:
     def oddEvenJumps(self, A: List[int]) -> int:
-        n = len(A)
-        next_higher, next_lower = [0] * n, [0] * n
-        stack = []
-        for a, i in sorted((a, i) for i, a in enumerate(A)):
-            while stack and stack[-1] < i:
-                next_higher[stack.pop()] = i
-            stack.append(i)    
-        for a, i in sorted((-a, i) for i, a in enumerate(A)):
-            while stack and stack[-1] < i:
-                next_lower[stack.pop()] = i    
-            stack.append(i)    
-        higher, lower = [0] * n, [0] * n    
-        higher[-1] = lower[-1] = 1
-        for i in range(n - 1)[::-1]:
-            higher[i] = lower[next_higher[i]]
-            lower[i] = higher[next_lower[i]]
-        return sum(higher)    
+        if not A: return 0
+        L = len(A)
+        odds, evens = [False]*L, [False]*L
+        odds[-1] = evens[-1] = True
+        def make(N: List[int]) -> List[int]:
+            output = [None]*L
+            s = []
+            for i in N:
+                while s and s[-1] < i:
+                    output[s.pop()] = i
+                s.append(i)
+            return output    
+        B = sorted(range(L), key=lambda i: A[i])
+        oddNext = make(B)
+        B.sort(key=lambda i: -A[i])
+        evenNext = make(B)
+        for i in range(L-2, -1, -1):
+            if oddNext[i] != None: odds[i] = evens[oddNext[i]]
+            if evenNext[i] != None: evens[i] = odds[evenNext[i]]
+        return sum(odds)
