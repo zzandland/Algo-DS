@@ -1,22 +1,14 @@
 class Solution:
-  def threeSum(self, nums: List[int]) -> List[List[int]]:
-    output = []
-    if len(nums) > 2:
-      o = set()
-      nums.sort()
-      for i, num in enumerate(nums):
-        if i > 0 and num == nums[i - 1]:
-          continue
-        l, r = i + 1, len(nums) - 1
-        while l < r:
-          lNum, rNum = nums[l], nums[r]
-          totalSum = num + lNum + rNum
-          if totalSum == 0:
-            o.add((num, lNum, rNum))
-          elif totalSum < 0:  
-            l += 1
-            continue
-          r -= 1  
-      for triple in o:
-        output.append(list(triple))    
-    return output    
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        N, output = len(nums), set()
+        nums.sort()
+        for i in range(N-2):
+            if i > 0 and nums[i] == nums[i-1]: continue
+            l, r = i+1, N-1
+            while l < r:
+                s = nums[i] + nums[l] + nums[r]
+                if s == 0:
+                    output.add((nums[i], nums[l], nums[r]))
+                if s > 0: r -= 1
+                else: l += 1
+        return [list(triple) for triple in output]
