@@ -1,17 +1,10 @@
 class Solution:
     def isValid(self, s: str) -> bool:
-        stack = collections.deque()
+        dic = {')': '(', '}': '{', ']': '['}
+        st = []
         for c in s:
-            if c == '(' or c == '[' or c == '{':
-                stack.append(c)
+            if c in ('(', '{', '['): st.append(c)
             else:
-                if len(stack) == 0:
-                    return False    
-                out = stack.pop()
-                if c == ')' and out != '(':
-                    return False
-                elif c == ']' and out != '[':
-                    return False
-                elif c == '}' and out != '{':
-                    return False
-        return len(stack) == 0
+                if not st or dic[c] != st[-1]: return False
+                st.pop()
+        return not st
