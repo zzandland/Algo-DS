@@ -1,38 +1,33 @@
-from typing import Dict, Any
+from collections import defaultdict
 
 class Solution:
     def findWords(self, board: List[List[str]], words: List[str]) -> List[str]:
+        R, C = len(board), len(board[0])
+        dic, n = {}, None
+        for w in words:
+            n = dic
+            for i in range(len(w)):
+                n.setdefault(w[i], {})
+                n = n[w[i]]
+            n['*'] = 1    
         output = []
-        if not board or not words:
-            return output
-        
-        root = {}
-        for word in words:
-            trie = root
-            for c in word:
-                if c not in trie:
-                    trie[c] = {}
-                trie = trie[c]    
-            trie['#'] = word    
-            
-        def recurse(row: int, col: int, trie) -> None:
-            nonlocal board
-            if '#' in trie:
-                word = trie['#']
-                if word not in found_word:
-                    found_word.add(word)
-                    output.append(word)
-            tmp, board[row][col] = board[row][col], ''
-            for r, c in ((row + 1, col), (row - 1, col), (row, col + 1), (row, col - 1)):
-                if 0 <= r < len(board) and 0 <= c < len(board[0]):
-                    if board[r][c] in trie:
-                        recurse(r, c, trie[board[r][c]])
-            board[row][col] = tmp
-    
-        found_word = set()
-        for i, row in enumerate(board):
-            for j, col in enumerate(row):
-                if board[i][j] in root:
-                    recurse(i, j, root[board[i][j]])
-        return sorted(output)
-    
+        def dfs(y: int, x: int, s: str, n: object) -> None:
+            if s == 'bend': print(n)
+            if '*' in n: 
+                del n['*']
+                output.append(s)
+            for r, c in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                ny, nx = y+r, x+c    
+                if 0 <= ny < R and 0 <= nx < C and (ny, nx) not in visited:
+                    ch = board[ny][nx]
+                    if ch in n: 
+                        visited.add((ny, nx))
+                        dfs(ny, nx, s+ch, n[ch])
+                        visited.remove((ny, nx))
+        for y in range(R):
+            for x in range(C):
+                ch = board[y][x]
+                if ch in dic:
+                    visited = set([(y, x)])
+                    dfs(y, x, ch, dic[ch])
+        return output
