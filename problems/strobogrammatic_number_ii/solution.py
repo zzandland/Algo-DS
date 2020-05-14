@@ -1,30 +1,14 @@
 class Solution:
     def findStrobogrammatic(self, n: int) -> List[str]:
-        nums = ["0", "1", "6", "8", "9"]
-        output = []
-        buf = collections.deque()
-        self.helper(buf, nums, n, output)
-        return output
-        
-    def helper(self, buf: List, nums: List[str], n: int, output: List[str]) -> None:
-        if len(buf) >= n:
-            if n == 1 or buf[0] != "0":
-                output.append(''.join(buf))
-            return    
-        for num in nums:
-            if len(buf) == 0 and n % 2 == 1:
-                if num != '6' and num != '9':
-                    buf.append(num)
-                    self.helper(buf, nums, n, output)
-                    buf.pop()
-            else:
-                buf.appendleft(num)
-                if num == '6':
-                    buf.append('9')
-                elif num == '9':
-                    buf.append('6')
-                else:    
-                    buf.append(num)
-                self.helper(buf, nums, n, output)
-                buf.popleft()
-                buf.pop()
+        if n == 0: return ['']
+        comb = [('0', '0'), ('1', '1'), ('6', '9'), ('8', '8'), ('9', '6')]
+        def fn(s: List[int]) -> List[str]:
+            if len(s) > n: return []
+            if len(s) == n: return [''.join(s)] if s[0] != '0' else []
+            output = []
+            for a, b in comb:
+                if not s and n == 2 and a == '0': continue
+                if not s and n % 2 == 1 and a in ('0', '1', '8'): output += fn([a])    
+                else: output += fn([a] + s + [b])    
+            return output        
+        return fn([]) if n > 1 else ['0', '1', '8']
