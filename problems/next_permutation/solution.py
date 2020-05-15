@@ -1,33 +1,26 @@
 class Solution:
-    def partition(self, l: int, r: int, nums: List[int]) -> int:
-        p, i = nums[r], l-1
-        for j in range(l, r):
-            if p > nums[j]:
-                i += 1
-                nums[i], nums[j] = nums[j], nums[i]
-        nums[i+1], nums[r] = nums[r], nums[i+1]
-        return i+1
-    
-    def quickSort(self, l: int, r: int, nums: List[int]) -> None:
-        if l < r:
-            p = self.partition(l, r, nums)
-            self.quickSort(l, p-1, nums)
-            self.quickSort(p+1, r, nums)
-
     def nextPermutation(self, nums: List[int]) -> None:
         """
         Do not return anything, modify nums in-place instead.
         """
         N = len(nums)
-        if N < 2: return nums
-        for i in range(N-2, -1, -1):
-            if nums[i] < nums[i+1]: break
-        if nums[i] >= nums[i+1]:
-            for j in range(N//2):
-                nums[j], nums[N-1-j] = nums[N-1-j], nums[j]
-            return    
-        nxt, nxtI = nums[i+1], i+1
-        for j in range(i+1, N):
-            if nums[j] > nums[i] and nxt > nums[j]: nxt, nxtI = nums[j], j
-        nums[i], nums[nxtI] = nums[nxtI], nums[i]
-        self.quickSort(i+1, N-1, nums)
+        if N == 0: return
+        for i in range(N-1, -1, -1):
+            if i == 0:
+                nums.reverse()
+                return
+            if nums[i-1] < nums[i]: break
+        l, r, t, found = i, N-1, nums[i-1], False
+        while l < r:
+            m = l + (r-l)//2
+            if nums[m] > t and nums[m+1] <= t:
+                found = True
+                break
+            if nums[m] > t: l = m+1
+            else: r = m    
+        if not found: m = l
+        nums[i-1], nums[m] = nums[m], nums[i-1]        
+        l, r = i, N-1
+        while l < r:
+            nums[l], nums[r] = nums[r], nums[l]
+            l, r = l+1, r-1
