@@ -1,60 +1,61 @@
 class Node:
-    def __init__(self, key:int, val: int):
+    def __init__(self, key: int, val: int):
         self.key = key
         self.val = val
-        self.prev = self.next = None
+        self.next = self.prev = None
         
-class DLL:
+class LRUQueue:
     def __init__(self):
-        self.head = self.tail = None
+        self.head = self.tail = None        
+        self.size = 0
         
-    def appendLeft(self, n: Node) -> None:
-        if self.head: self.head.prev, n.next = n, self.head
-        if self.tail == n: self.tail = self.head    
-        self.head = n    
-        if not self.tail: self.tail = n    
-        
-    def pop(self) -> Node:
-        n = self.tail
-        if self.tail:
-            self.tail.prev.next = None
+    def enqueue(self, n: Node) -> None:
+        if self.head: n.next, self.head.prev = self.head, n
+        self.head = n
+        if not self.tail: self.tail = n
+        self.size += 1    
+            
+    def dequeue(self) -> Node:
+        t = self.tail
+        if self.tail != self.head:
             self.tail = self.tail.prev
-        n.prev = None    
-        return n
-    
-    def popInside(self, n: Node) -> Node:
+            self.tail.next = None
+        else:
+            self.tail = self.head = None
+        t.next = t.prev = None
+        self.size -= 1    
+        return t
+        
+    def remove(self, n: Node) -> Node:
+        if self.tail == n: return self.dequeue()
+        self.size -= 1
+        if self.head == n: self.head = n.next
         if n.prev: n.prev.next = n.next
-        else: self.head = self.head.next    
-        if n.next: n.next.prev = n.prev
-        else: self.tail = self.tail.prev    
-        n.next = n.prev = None    
+        if n.next: n.next.prev = n.prev    
+        n.next = n.prev = None
         return n
-
+        
 class LRUCache:
     def __init__(self, capacity: int):
-        self.capacity = 0
-        self.max = capacity
+        self.q = LRUQueue()        
         self.dic = {}
-        self.dll = DLL()
+        self.capacity = capacity
         
     def get(self, key: int) -> int:
-        if key not in self.dic: return -1
-        n = self.dll.popInside(self.dic[key])
-        self.dll.appendLeft(n)
-        return n.val
+        if key in self.dic: 
+            n = self.q.remove(self.dic[key])
+            self.q.enqueue(n)
+            return n.val
+        return -1
 
     def put(self, key: int, val: int) -> None:
-        if key not in self.dic:
-            n = Node(key, val)
-            self.dic[key] = n
-            self.dll.appendLeft(n)
-            if self.capacity == self.max:
-                l = self.dll.pop()
-                del self.dic[l.key]
-            else: self.capacity += 1    
-        else:
-             self.dic[key].val = val       
-             self.get(key)   
+        n = Node(key, val)
+        if key in self.dic: self.q.remove(self.dic[key])        
+        self.dic[key] = n
+        self.q.enqueue(n)
+        if self.capacity < self.q.size: 
+            d = self.q.dequeue()
+            del self.dic[d.key]
 
 # Your LRUCache object will be instantiated and called as such:
 # obj = LRUCache(capacity)
