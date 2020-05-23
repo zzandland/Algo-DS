@@ -10,8 +10,8 @@ class Solution:
         def fn(n: TreeNode) -> int:
             nonlocal mx
             if not n: return 0
-            l, r = fn(n.left), fn(n.right)
-            mx = max(mx, n.val, n.val+l, n.val+r, n.val+l+r)
-            return max(n.val, n.val + max(l, r))
+            lv, rv = fn(n.left), fn(n.right)
+            mx = max(mx, n.val, n.val+lv, n.val+rv, n.val+lv+rv)
+            return max(n.val, n.val+lv, n.val+rv)
         fn(root)
         return mx
