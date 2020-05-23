@@ -3,17 +3,17 @@
 
 class Solution:
     def __init__(self):
-        self.buf = [None]*4
-        self.i = 0
-        self.n = read4(self.buf)
-
+        self.l = self.r = 0
+        self.buf = ['']*4
+    
     def read(self, buf: List[str], n: int) -> int:
-        if self.n == 0: return 0
+        if n == 0: return 0
         for i in range(n):
-            if self.i == self.n:
-                self.buf, self.i = [None]*4, 0
-                self.n = read4(self.buf)
-                if self.n == 0: return i
-            buf[i] = self.buf[self.i]
-            self.i += 1
-        return n    
+            if self.l >= self.r:
+                self.buf = ['']*4
+                self.r = read4(self.buf)
+                if self.r == 0: return i
+                self.l = 0
+            buf[i] = self.buf[self.l]    
+            self.l += 1
+        return i+1
