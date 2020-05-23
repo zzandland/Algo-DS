@@ -1,25 +1,15 @@
 # Definition for a binary tree node.
 # class TreeNode:
-#     def __init__(self, x):
-#         self.val = x
-#         self.left = None
-#         self.right = None
-
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
 class Solution:
     def isValidBST(self, root: TreeNode) -> bool:
-        return self.recurse(root, None, None)
-    
-    def recurse(self, root: TreeNode, lower: int, upper: int) -> bool:
-        if root is None:
-            return True
-        if lower is not None and root.val <= lower:
-            return False
-        if upper is not None and root.val >= upper:
-            return False
-        if root.left is not None and root.val <= root.left.val:
-            return False
-        if root.right is not None and root.val >= root.right.val:
-            return False    
-        left_sub = self.recurse(root.left, lower, root.val) 
-        right_sub = self.recurse(root.right, root.val, upper)
-        return left_sub and right_sub
+        def fn(n: TreeNode, l: int, r: int) -> bool:
+            if not n: return True
+            if not (l < n.val < r): return False
+            if n.left and n.val < n.left.val: return False
+            if n.right and n.val > n.right.val: return False
+            return fn(n.left, l, n.val) and fn(n.right, n.val, r)
+        return fn(root, float('-inf'), float('inf'))
