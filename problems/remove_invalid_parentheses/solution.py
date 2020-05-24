@@ -1,22 +1,15 @@
 class Solution:
     def removeInvalidParentheses(self, s: str) -> List[str]:
-        S, output, mx = len(s), set(), 0
-        def fn(i: int, c: int, run: str) -> List[str]:
-            nonlocal mx, output
+        res, S, mx, dic = set(), len(s), 0, {'(': 1, ')': -1}
+        def dfs(i: int, c: int, ss: str) -> None:
+            nonlocal res, mx, dic
             if c < 0: return
             if i == S:
-                if c > 0: return
-                if len(run) > mx:
-                    mx = len(run)
-                    output = set()
-                if len(run) == mx: output.add(run)    
+                if c == 0:
+                    if len(ss) > mx: res, mx = set(), max(mx, len(ss))
+                    if len(ss) == mx: res.add(ss)    
                 return
-            if s[i] == '(':
-                fn(i+1, c+1, run+s[i])
-                fn(i+1, c, run)
-            elif s[i] == ')':
-                fn(i+1, c-1, run+s[i])
-                fn(i+1, c, run)
-            else: fn(i+1, c, run+s[i])
-        fn(0, 0, '')
-        return list(output)
+            if s[i] not in ('(', ')'): return dfs(i+1, c, ss+s[i])
+            dfs(i+1, c+dic[s[i]], ss+s[i]), dfs(i+1, c, ss)
+        dfs(0, 0, '')    
+        return res
