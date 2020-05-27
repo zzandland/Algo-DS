@@ -1,9 +1,10 @@
 class Solution:
     def subsets(self, nums: List[int]) -> List[List[int]]:
-        def fn(i: int, st: List[int]) -> List[int]:
-            if i == len(nums): return []
-            out = [st]
-            for j in range(i+1, len(nums)):
-                out += fn(j, st+[nums[j]])
-            return out    
-        return fn(-1, [])
+        N = len(nums)
+        def dfs(i: int, run: List[int]) -> List[List[int]]:
+            if i == N: return []
+            res = [run]
+            for j in range(i+1, N):
+                res += dfs(j, run+[nums[j]])
+            return res    
+        return dfs(-1, [])
