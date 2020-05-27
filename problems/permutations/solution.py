@@ -1,6 +1,10 @@
 class Solution:
     def permute(self, nums: List[int]) -> List[List[int]]:
         res = [[]]
-        for i, n in enumerate(nums):
-            res = [p[:j]+[n]+p[j:] for p in res for j in range(len(p)+1)]
+        for num in nums:
+            tmp = []
+            for p in res:
+                for i in range(len(p)+1):
+                    tmp.append(p[:i] + [num] + p[i:])
+            res = tmp        
         return res    
