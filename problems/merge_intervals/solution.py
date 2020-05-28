@@ -1,11 +1,14 @@
+import heapq
+
 class Solution:
     def merge(self, intervals: List[List[int]]) -> List[List[int]]:
         if not intervals: return []
-        intervals.sort()
-        N, t, output = len(intervals), intervals[0], []
-        for i in range(1, N):
-            if intervals[i][0] > t[1]: 
-                output.append(t)
-                t = intervals[i]
-            else: t = [min(t[0], intervals[i][0]), max(t[1], intervals[i][1])]
-        return output + [t]        
+        heapq.heapify(intervals)
+        res = []
+        while intervals:
+            i, j = heapq.heappop(intervals)
+            if not res:
+                res.append([i, j])
+            elif i <= res[-1][1]: res[-1][1] = max(j, res[-1][1])
+            else: res.append([i, j])
+        return res        
