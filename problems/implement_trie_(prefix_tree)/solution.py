@@ -4,45 +4,37 @@ class Trie:
         """
         Initialize your data structure here.
         """
-        self.trie = {}
-        
+        self.root = {}
 
     def insert(self, word: str) -> None:
         """
         Inserts a word into the trie.
         """
-        n = self.trie
+        n = self.root
         for c in word:
-          if c not in n:
-            n[c] = {}
-          n = n[c]
-        n['*'] = 1  
-        
-
+            n.setdefault(c, {})
+            n = n[c]
+        n['*'] = None
+            
     def search(self, word: str) -> bool:
         """
         Returns if the word is in the trie.
         """
-        n = self.trie
+        n = self.root
         for c in word:
-          if c not in n:
-            return False
-          n = n[c]
-        return '*' in n
-        
+            if c not in n: return False
+            n = n[c]
+        return '*' in n    
 
     def startsWith(self, prefix: str) -> bool:
         """
         Returns if there is any word in the trie that starts with the given prefix.
         """
-        n = self.trie
+        n = self.root
         for c in prefix:
-          if c not in n:
-            return False
-          n = n[c]
-        return True
-        
-
+            if c not in n: return False
+            n = n[c]
+        return True    
 
 # Your Trie object will be instantiated and called as such:
 # obj = Trie()
