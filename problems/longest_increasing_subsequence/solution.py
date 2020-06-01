@@ -1,10 +1,20 @@
 class Solution:
     def lengthOfLIS(self, nums: List[int]) -> int:
-        if not nums: return 0
-        N, mx = len(nums), 1
-        dp = [1] * N
-        for i in range(1, N):
-            for j in range(i):
-                if nums[i] > nums[j] and dp[i] <= dp[j]: dp[i] += 1
-                mx = max(mx, dp[i])
-        return mx
+        N, res = len(nums), 0
+        dp = [float('-inf')]*N
+        for num in nums:
+            l, r = 0, res-1
+            while l < r:
+                m = l + (r-l)//2
+                if dp[m] == num:
+                    l = r = m
+                elif dp[m] > num:
+                    r = m
+                else:
+                    l = m+1
+            if num > dp[l]:
+                dp[res] = num
+                res += 1
+            else:
+                dp[l] = num
+        return res
