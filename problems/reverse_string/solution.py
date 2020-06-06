@@ -3,5 +3,6 @@ class Solution:
         """
         Do not return anything, modify s in-place instead.
         """
-        for i in range(len(s) // 2):
-            s[i], s[-1 - i] = s[-1 - i], s[i]
+        S = len(s)
+        for i in range(S//2):
+            s[i], s[S-i-1] = s[S-i-1], s[i]
