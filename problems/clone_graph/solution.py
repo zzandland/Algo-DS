@@ -8,15 +8,18 @@ class Node:
 
 class Solution:
     def cloneGraph(self, node: 'Node') -> 'Node':
-        dic, visited = {}, set()
-        if not node: return None
-        def dfs(n: Node) -> Node:
-            dic.setdefault(node, Node(node.val))
-            if n in visited: return dic[n]
-            visited.add(n)
-            for nxt in n.neighbors:
-                dic.setdefault(nxt, Node(nxt.val))
-                dic[n].neighbors.append(dic[nxt])
-                dfs(nxt)
-            return dic[n]
-        return dfs(node)
+        if not node:
+            return None
+        dic, st, seen = {}, [node], set()
+        while st:
+            n = st.pop()
+            seen.add(n)
+            dic.setdefault(n, Node(n.val))
+            if n.neighbors:
+                dic[n].neighbors = set()
+                for nn in n.neighbors:
+                    dic.setdefault(nn, Node(nn.val))
+                    dic[n].neighbors.add(dic[nn])
+                    if nn not in seen:
+                        st.append(nn)
+        return dic[node]                
