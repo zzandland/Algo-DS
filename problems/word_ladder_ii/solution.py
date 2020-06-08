@@ -1,21 +1,32 @@
-import collections
+from collections import deque, defaultdict
 
 class Solution:
     def findLadders(self, beginWord: str, endWord: str, wordList: List[str]) -> List[List[str]]:
-        tree, words, found = collections.defaultdict(set), set(wordList), False
-        if endWord not in wordList: return []
-        q1, q2, nq, rev = {beginWord}, {endWord}, set(), False
-        while q1 and not found:
+        words, N = set(wordList), len(beginWord)
+        if endWord not in words: return []
+        q1, q2, adj = set([beginWord]), set([endWord]), defaultdict(list)
+        found, front = False, True
+        while not found and q1:
+            if len(q1) > len(q2):
+                q1, q2 = q2, q1
+                front = not front
             words -= q1
+            nq = set()
             for w in q1:
-                for nw in [w[:i] + chr(j) + w[i+1:] for i in range(len(w)) for j in range(97, 123)]:
-                    if nw in words:
-                        if nw in q2: found = True
-                        else: nq.add(nw)
-                        tree[nw].add(w) if rev else tree[w].add(nw)
-            q1, nq = nq, set()
-            if len(q1) > len(q2): q2, q1, rev = q1, q2, not rev
-        output = []    
-        def dfs(x: List[int]) -> List[List[int]]:
-            return [[x]] if x == endWord else [[x] + rest for y in tree[x] for rest in dfs(y)]
+                for i in range(N):
+                    for c in 'abcdefghijklmnopqrstuvwxyz':
+                        nw = w[:i]+c+w[i+1:]
+                        if nw in words:
+                            nq.add(nw)
+                            if front:
+                                adj[w].append(nw)
+                            else:
+                                adj[nw].append(w)
+                            if nw in q2:
+                                found = True
+            q1 = nq
+        def dfs(w: str) -> List[List[str]]:
+            if w == endWord:
+                return [[w]]
+            return [[w] + rest for nw in adj[w] for rest in dfs(nw)]
         return dfs(beginWord)
