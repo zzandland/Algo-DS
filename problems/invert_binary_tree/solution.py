@@ -6,8 +6,9 @@
 #         self.right = right
 class Solution:
     def invertTree(self, root: TreeNode) -> TreeNode:
-        def fn(n: TreeNode) -> TreeNode:
+        def dfs(n: TreeNode) -> TreeNode:
             if not n: return None
-            n.left, n.right = fn(n.right), fn(n.left)
+            n.left, n.right = dfs(n.right), dfs(n.left)
             return n
-        return fn(root)    
+        return dfs(root)
+            
