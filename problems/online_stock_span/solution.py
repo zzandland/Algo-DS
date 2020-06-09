@@ -1,4 +1,5 @@
 class StockSpanner:
+
     def __init__(self):
         self.st = []
 
