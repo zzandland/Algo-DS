@@ -4,29 +4,30 @@ class RandomizedSet:
         """
         Initialize your data structure here.
         """
-        self.map = defaultdict(int)
+        self.dic = {}
         self.arr = []
 
     def insert(self, val: int) -> bool:
         """
         Inserts a value to the set. Returns true if the set did not already contain the specified element.
         """
-        if val in self.map: return False
+        if val in self.dic:
+            return False
+        self.dic[val] = len(self.arr)
         self.arr.append(val)
-        self.map[val] = len(self.arr)-1
         return True
 
     def remove(self, val: int) -> bool:
         """
         Removes a value from the set. Returns true if the set contained the specified element.
         """
-        if val not in self.map: return False
-        i = self.map[val]
-        del self.map[val]
-        if i != len(self.arr)-1:
-            last = self.arr[-1]
-            self.arr[-1], self.arr[i] = self.arr[i], self.arr[-1]
-            self.map[last] = i
+        if val not in self.dic:
+            return False
+        lsti = len(self.arr)-1
+        lst, vali = self.arr[lsti], self.dic[val]
+        self.dic[lst] = vali
+        self.arr[vali], self.arr[lsti] = self.arr[lsti], self.arr[vali]
+        del self.dic[val]
         self.arr.pop()
         return True
 
@@ -35,7 +36,6 @@ class RandomizedSet:
         Get a random element from the set.
         """
         return random.choice(self.arr)
-        
 
 
 # Your RandomizedSet object will be instantiated and called as such:
