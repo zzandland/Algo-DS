@@ -7,15 +7,16 @@
 
 class Solution:
     def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
-        lca = None
-        def dfs(n: TreeNode) -> bool:
-            nonlocal lca
-            if not n: return False
-            ln, rn = dfs(n.left), dfs(n.right)
-            if n == p or n == q:
-                if ln or rn: lca = n
+        res = root
+        def fn(n: TreeNode) -> bool:
+            nonlocal res
+            if not n:
+                return False
+            lf, rf = fn(n.left), fn(n.right)
+            if lf or rf:
+                if n in (p, q) or lf and rf:
+                    res = n
                 return True
-            if ln and rn: lca = n
-            return ln or rn
-        dfs(root)
-        return lca
+            return n in (p, q)
+        fn(root)
+        return res
