@@ -1,15 +1,18 @@
 from collections import defaultdict
+from heapq import *
 
 class Solution:
     def networkDelayTime(self, times: List[List[int]], N: int, K: int) -> int:
-        ws = [float('inf')]*(N+1)
-        ws[K] = 0
-        for _ in range(N):
-            change = False
-            for u, v, w in times:
-                if ws[v] > ws[u]+w:
-                    change = True
-                    ws[v] = ws[u]+w
-            if not change: break    
-        mx = max(ws[1:])
-        return mx if mx != float('inf') else -1
+        adj, seen = defaultdict(list), set()
+        for u, v, w in times:
+            adj[u].append((v, w))
+        hp, V = [(0, K)], [float('inf')]*N
+        V[K-1] = 0
+        while hp and len(seen) < N:
+            w, n = heappop(hp)
+            if n not in seen:
+                seen.add(n)
+                for nn, nw in adj[n]:
+                    V[nn-1] = min(V[nn-1], V[n-1]+nw)
+                    heappush(hp, (V[nn-1], nn))
+        return max(V) if len(seen) == N else -1
