@@ -1,40 +1,51 @@
-class NumArray:
-    def _update(self, l: int, r: int, i: int, t: int, val: int) -> int:
-        if l == r:
-            self.dp[i] = val
-            return self.dp[i]
-        m = l + (r-l)//2
-        if t <= m: ln, rn = self._update(l, m, 2*i+1, t, val), self.dp[2*i+2]
-        else: ln, rn = self.dp[2*i+1], self._update(m+1, r, 2*i+2, t, val)
-        self.dp[i] = ln + rn
-        return self.dp[i]
-    
-    def __init__(self, nums: List[int]):
-        if not nums: return
-        self.N = len(nums)
-        x = (int)(ceil(log2(self.N)))
-        self.dp = [None] * (2 * 2**x - 1)
-        def fn(l: int, r: int, i: int) -> int:
-            print(l, r, i)
-            if l == r:
-                self.dp[i] = nums[l]
-            else:
-                m = l + (r-l)//2
-                self.dp[i] = fn(l, m, 2*i+1) + fn(m+1, r, 2*i+2)
-            return self.dp[i]
-        fn(0, self.N-1, 0)
+class Node:
+    def __init__(self, l: int, r: int, val: int):
+        self.l = l
+        self.r = r
+        self.val = val
+        self.left = self.right = None
 
+class NumArray:
+    def __init__(self, nums: List[int]):
+        run, tmp = 0, [0]
+        for n in nums:
+            run += n
+            tmp.append(run)
+        def build(l: int, r: int) -> Node:
+            n = Node(l, r, tmp[r+1]-tmp[l])
+            if l < r:
+                m = l + (r-l)//2
+                n.left, n.right = build(l, m), build(m+1, r)
+            return n
+        self.root = build(0, len(nums)-1)
+        
     def update(self, i: int, val: int) -> None:
-        self._update(0, self.N-1, 0, i, val)
+        n, st = self.root, []
+        while n.l != i or n.r != i:
+            st.append(n)
+            m = n.l + (n.r-n.l)//2
+            if m >= i:
+                n = n.left
+            else:
+                n = n.right
+        diff = n.val - val
+        n.val = val
+        while st:
+            n = st.pop()
+            n.val -= diff
 
     def sumRange(self, i: int, j: int) -> int:
-        def fn(d: int, l: int, r: int) -> int:
-            nonlocal i, j
-            if l >= i and r <= j: return self.dp[d]
-            if l > j or r < i: return 0
-            m = l + (r-l)//2
-            return fn(2*d+1, l, m) + fn(2*d+2, m+1, r)
-        return fn(0, 0, self.N-1)
+        def fn(n: Node, l: int, r: int) -> int:
+            if n.l == l and n.r == r:
+                return n.val
+            m = n.l + (n.r-n.l)//2
+            if r <= m:
+                return fn(n.left, l, r)
+            elif l > m:
+                return fn(n.right, l, r)
+            else:
+                return fn(n.left, l, m) + fn(n.right, m+1, r)
+        return fn(self.root, i, j)
 
 # Your NumArray object will be instantiated and called as such:
 # obj = NumArray(nums)
