@@ -1,22 +1,17 @@
 # Definition for a binary tree node.
 # class TreeNode:
-#     def __init__(self, x):
-#         self.val = x
-#         self.left = None
-#         self.right = None
-
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
 class Solution:
     def isSymmetric(self, root: TreeNode) -> bool:
-        if root is None:
+        if not root:
             return True
-        return self.recurse(root.left, root.right)    
-    
-
-    def recurse(self, left: TreeNode, right: TreeNode) -> bool:
-        if left is None and right is None:
-            return True
-        if left is None or right is None:
-            return False    
-        if left.val != right.val:
-            return False
-        return self.recurse(left.left, right.right) and self.recurse(left.right, right.left)
+        def fn(l: TreeNode, r: TreeNode) -> bool:
+            if not l and not r:
+                return True
+            if not l or not r:
+                return False
+            return l.val == r.val and fn(l.left, r.right) and fn(l.right, r.left)
+        return fn(root.left, root.right)
