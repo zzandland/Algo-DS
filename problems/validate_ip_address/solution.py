@@ -1,24 +1,23 @@
 class Solution:
     def validIPAddress(self, IP: str) -> str:
-        def isIPv4(IP: str) -> bool:
-            split = IP.split('.')
-            if len(split) != 4: return False
-            for digit in split:
-                if not digit.isnumeric() or str(int(digit)) != digit or int(digit) < 0 or int(digit) > 255:
+        def ipv4(ip: str) -> bool:
+            s = ip.split('.')
+            if len(s) != 4:
+                return False
+            for i in s:
+                if not i.isdigit() or len(i) != len(str(int(i))) or not (0 <= int(i) < 256):
                     return False
             return True
-        
-        def isIPv6(IP: str) -> bool:
-            split = IP.split(':')
-            if len(split) != 8: return False
-            for seg in split:
-                if len(seg) > 4 or not seg.isalnum(): return False
-                try:
-                    int(seg, 16)
-                except ValueError:
-                    print(seg)
+        def ipv6(ip: str) -> bool:
+            s = ip.split(':')
+            if len(s) != 8:
+                return False
+            for i in s:
+                if not (1 <= len(i) < 5) or not all([c in string.hexdigits for c in i]):
                     return False
             return True    
-        if isIPv4(IP): return 'IPv4'
-        elif isIPv6(IP): return 'IPv6'
-        else: return 'Neither'
+        if ipv4(IP):
+            return 'IPv4'
+        if ipv6(IP):
+            return 'IPv6'
+        return 'Neither'
