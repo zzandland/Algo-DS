@@ -1,7 +1,9 @@
 class Solution:
     def generateParenthesis(self, n: int) -> List[str]:
-        def fn(c: int, s: int) -> List[str]:
-            if c < 0: return []
-            if len(s) == n*2: return [s] if c == 0 else []
-            return fn(c+1, s+'(') + fn(c-1, s+')')
-        return fn(0, '')
+        def fn(i: int, c: int) -> List[str]:
+            if i == n and c == 0:
+                return ['']
+            if i > n or c < 0:
+                return []
+            return ['(' + s for s in fn(i+1, c+1)] + [')' + s for s in fn(i, c-1)]
+        return fn(0, 0)
