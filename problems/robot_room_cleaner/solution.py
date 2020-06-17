@@ -36,24 +36,28 @@ class Solution:
         :type robot: Robot
         :rtype: None
         """
-        dir_, visited, opp = ['u', 'r', 'd', 'l'], set([(0, 0)]), {'u': 'd', 'd': 'u', 'l': 'r', 'r': 'l'}
-        dirDic = {'u': (1, 0), 'd': (-1, 0), 'l': (0, -1), 'r': (0, 1)}
-        sy = sx = d = 0
-        def rotate(t: str) -> None:
+        d = 0
+        seen = set()
+        dic = {0: (-1, 0), 1: (0, 1), 2: (1, 0), 3: (0, -1)}
+        def turn(t: int):
             nonlocal d
-            while dir_[d] != t:
+            if d - t == 1 or d == 0 and t == 3:
+                robot.turnLeft()
+            elif d - t == -1 or d == 3 and t == 0:
                 robot.turnRight()
-                d = (d+1) % 4
-        def dfs(y: int, x: int, prev: str) -> None:
+            elif abs(d - t) == 2:
+                robot.turnRight()
+                robot.turnRight()
+            d = t
+        def dfs(y: int, x: int, p: int):
             robot.clean()
-            for dd in dir_:
-                if dd == opp[dd]: continue
-                rotate(dd)
-                r, c = dirDic[dd]
-                ny, nx = y+r, x+c
-                if (ny, nx) not in visited and robot.move():
-                    visited.add((ny, nx))
-                    dfs(y+r, x+c, dd)
-            rotate(opp[prev])
-            robot.move()    
-        dfs(0, 0, 'u')    
+            for dd in dic:
+                turn(dd)
+                ny, nx = y+dic[dd][0], x+dic[dd][1]
+                if (ny, nx) not in seen and robot.move():
+                    seen.add((ny, nx))
+                    dfs(y+dic[dd][0], x+dic[dd][1], dd)
+            turn((p+2) % 4)
+            robot.move()
+        seen.add((0, 0))
+        dfs(0, 0, 0)
