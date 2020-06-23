@@ -6,23 +6,33 @@
 #         self.right = right
 class Solution:
     def countNodes(self, root: TreeNode) -> int:
-        h, n, res = 0, root, 0
-        while n and n.left:
-            res += 2**h
-            h, n = h+1, n.left
-        d = 2**h    
-        def down(t: int) -> TreeNode:
-            n, l, r = root, 0, d-1
-            while l < r:
+        if not root:
+            return 0
+        h, n = 0, root
+        while n.left:
+            n = n.left
+            h += 1
+        N = 2**h
+        def exists(t: int) -> bool:
+            nonlocal h, N
+            l, r, d, n = 0, N-1, 0, root
+            while d < h:
                 m = l + (r-l)//2
-                if m >= t: r, n = m, n.left
-                else: l, n = m+1, n.right
-            return n        
-        l, r = 0, d-1
-        while l <= r:
+                if t <= m:
+                    n = n.left
+                    r = m
+                else:
+                    n = n.right
+                    l = m+1
+                d += 1    
+            return bool(n)
+        l, r = 0, N-1
+        while l < r:
             m = l + (r-l)//2
-            n = down(m)
-            if n and r == l: break
-            if n: l = m+1
-            else: r = m-1 
-        return d + min(l, r)        
+            if exists(m):
+                l = m+1
+            else:
+                r = m
+        if exists(l):        
+            l += 1
+        return l + sum([2**i for i in range(h)])
