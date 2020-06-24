@@ -1,16 +1,13 @@
+from collections import Counter
+
 class Solution:
     def totalFruit(self, tree: List[int]) -> int:
-        i = j = 0
-        st, T, mx = set(), len(tree), 0
-        while i < T:
-            st.add(tree[i])
-            if len(st) > 2:
-                j, st = i, set([tree[i]])
-                while len(st) <= 2:
-                    j -= 1
-                    st.add(tree[j])
-                st.remove(tree[j])    
+        st, j, res = Counter(), 0, 0
+        for i, f in enumerate(tree):
+            st[f] += 1
+            while len(st) > 2:
+                st[tree[j]] -= 1
+                if st[tree[j]] == 0: del st[tree[j]]
                 j += 1
-            i += 1
-            mx = max(mx, i-j)
-        return mx  
+            res = max(res, i-j+1)
+        return res
