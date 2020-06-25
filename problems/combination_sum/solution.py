@@ -1,11 +1,14 @@
 class Solution:
     def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
-        N = len(candidates)
-        def dq(i: int, n: int) -> List[List[int]]:
-            if i == N and n == 0:
-                return [[]]
-            if i == N or n < 0:
-                return []
-            c = candidates[i]
-            return [[c] + x for x in dq(i, n-c)] + dq(i+1, n)
-        return dq(0, target)
+        N, res, run = len(candidates), [], []
+        def fn(i: int, s: int) -> None:
+            if i == N or s > target: return
+            if s == target:
+                res.append(run[:])
+                return
+            for j in range(i, N):
+                run.append(candidates[j])
+                fn(j, s + candidates[j])
+                run.pop()
+        fn(0, 0)
+        return res
