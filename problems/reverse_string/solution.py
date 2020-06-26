@@ -3,6 +3,9 @@ class Solution:
         """
         Do not return anything, modify s in-place instead.
         """
-        S = len(s)
-        for i in range(S//2):
-            s[i], s[S-i-1] = s[S-i-1], s[i]
+        self.helper(s, 0)
+        
+    def helper(self, s: List[str], i: int) -> None:    
+        if i == len(s) // 2: return
+        s[i], s[len(s)-i-1] = s[len(s)-i-1], s[i]
+        self.helper(s, i+1)
