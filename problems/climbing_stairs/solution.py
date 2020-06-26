@@ -1,7 +1,8 @@
 class Solution:
     def climbStairs(self, n: int) -> int:
-      dp = [0, 1, 2]
-      if n > 2:
-        for i in range(3, n + 1):
-          dp.append(dp[i - 1] + dp[i - 2])
-      return dp[n]  
+        dp = [1, 1] + [None]*(n-1)
+        def fn(i: int) -> int:
+            if dp[i] == None:
+                dp[i] = fn(i-1) + fn(i-2)
+            return dp[i]
+        return fn(n)
