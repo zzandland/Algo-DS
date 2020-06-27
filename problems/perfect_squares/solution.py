@@ -1,8 +1,11 @@
 class Solution:
     def numSquares(self, n: int) -> int:
-        dp, squares = [float('inf') if i > 0 else 0 for i in range(n+1)], [i**2 for i in range(int(math.sqrt(n))+1)]
-        for i in range(n+1):
-            for j in squares:
-                if i < j: break
-                dp[i] = min(dp[i], dp[i-j]+1)    
-        return dp[-1]        
+        sqs, idx = [], 1
+        while idx*idx <= n:
+            sqs.append(idx*idx)
+            idx += 1
+        dp = [0] + [float('inf')]*(n)
+        for sq in sqs:
+            for i in range(sq, n+1):
+                dp[i] = min(dp[i], 1 + dp[i-sq])
+        return dp[n]
