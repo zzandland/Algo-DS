@@ -1,10 +1,8 @@
 class Solution:
     def subsets(self, nums: List[int]) -> List[List[int]]:
         N = len(nums)
-        def dfs(i: int, run: List[int]) -> List[List[int]]:
+        def dq(i: int) -> List[List[int]]:
             if i == N: return []
-            res = [run]
-            for j in range(i+1, N):
-                res += dfs(j, run+[nums[j]])
-            return res    
-        return dfs(-1, [])
+            n = nums[i]
+            return [[n]] + [[n] + st for st in dq(i+1)] + dq(i+1)
+        return [[]] + dq(0)
