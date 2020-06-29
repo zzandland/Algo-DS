@@ -1,14 +1,17 @@
 class MyCalendarTwo:
+
     def __init__(self):
-        self.single = []
-        self.double = []
+        self.s = set()
+        self.d = set()
 
     def book(self, start: int, end: int) -> bool:
-        for i, j in self.double:
-            if i < end and start < j: return False
-        for i, j in self.single:
-            if i < end and start < j: self.double.append([max(i, start), min(j, end)])
-        self.single.append([start, end])        
+        for ds, de in self.d:
+            if start >= de or end <= ds: continue
+            else: return False
+        for ss, se in self.s:
+            if start >= se or end <= ss: continue
+            else: self.d.add((max(start, ss), min(end, se)))
+        self.s.add((start, end))
         return True
 
 # Your MyCalendarTwo object will be instantiated and called as such:
