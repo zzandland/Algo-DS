@@ -1,9 +1,13 @@
 class Solution:
     def validMountainArray(self, A: List[int]) -> bool:
-        L, climb = len(A), True
-        for i in range(L-1):
-            if climb and A[i] >= A[i+1]:
-                if i == 0: return False
-                climb = False
-            if not climb and A[i] <= A[i+1]: return False    
-        return not climb    
+        up, seen = True, False
+        for i in range(1, len(A)-1):
+            if A[i] == A[i-1]: return False
+            if A[i-1] < A[i] and A[i] > A[i+1]:
+                if up:
+                    seen = True
+                    up = False
+                else: 
+                    return False
+            elif not (A[i-1] < A[i] < A[i+1] and up) and not (A[i-1] > A[i] > A[i+1] and not up): return False
+        return seen
