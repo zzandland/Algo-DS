@@ -6,17 +6,16 @@
 #         self.right = right
 class Solution:
     def maxLevelSum(self, root: TreeNode) -> int:
-        if not root:
-            return 0
-        q, lvs = [root], [float('-inf')]
+        if not root: return 0
+        q = [root]
+        mx, lv = 0, 0
         while q:
-            nq, tmp = [], 0
+            nq, cur = [], 0
+            lv += 1
             for n in q:
-                tmp += n.val
-                if n.left:
-                    nq.append(n.left)
-                if n.right:
-                    nq.append(n.right)
-            lvs.append(tmp)
+                cur += n.val
+                if n.left: nq.append(n.left)
+                if n.right: nq.append(n.right)
+            if cur > mx: mx, res = cur, lv
             q = nq
-        return max(range(len(lvs)), key=lambda x: lvs[x])
+        return res
