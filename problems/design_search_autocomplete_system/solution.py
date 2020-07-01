@@ -2,52 +2,55 @@ from collections import defaultdict
 
 class Node:
     def __init__(self):
+        self.top = []
         self.next = defaultdict(Node)
-        self.top3 = []
 
 class AutocompleteSystem:
+
     def __init__(self, sentences: List[str], times: List[int]):
-        self.root = self.cur = Node()
-        self.id_ = 0
-        self.query = ''
-        self.query2id = {}
-        self.id2query = {}
-        self.id2cnt = {}
-        self.comp = lambda id_: (-self.id2cnt[id_], self.id2query[id_])
+        self.id2s = {}
+        self.s2id = {}
+        self.s2cnt = {}
+        self.id = 0
+        self.root = Node()
+        self.cur = self.root
+        self.buf = ''
         for s, t in zip(sentences, times):
-            self._update(s, t)
-        
-    def _query2id(self, query: str) -> int:
-        if query not in self.query2id:
-            self.query2id[query] = self.id_
-            self.id2query[self.id_] = query
-            self.id2cnt[self.id_] = 0
-            self.id_ += 1
-        return self.query2id[query]
-    
-    def _update(self, query: str, times: int = 1) -> None:
-        id_ = self._query2id(query)
-        self.id2cnt[id_] += times
-        n = self.root
-        for c in query:
+            self.genId(s)
+            self.s2cnt[s] += t
+            self.update(s)
+            
+    def genId(self, s: str) -> None:
+        if s not in self.s2id:
+            self.id2s[self.id] = s
+            self.s2id[s] = self.id
+            self.s2cnt[s] = 0
+            self.id += 1
+
+    def update(self, s: str) -> None:
+        id, n = self.s2id[s], self.root
+        for c in s:
             n = n.next[c]
-            if id_ not in n.top3:
-                if len(n.top3) < 3:
-                    n.top3.append(id_)
+            if id not in n.top:
+                if len(n.top) < 3:
+                    n.top.append(id)
                 else:
-                    minIdx = max(range(3), key=lambda i: self.comp(n.top3[i]))
-                    if self.comp(id_) <= self.comp(n.top3[minIdx]):
-                        n.top3[minIdx] = id_
+                    n.top.sort(key=lambda x: (-self.s2cnt[self.id2s[x]], self.id2s[x]))
+                    mn = n.top[-1]
+                    scnt, mncnt = self.s2cnt[s], self.s2cnt[self.id2s[mn]]
+                    if (-scnt, s) < (-mncnt, self.id2s[mn]): n.top[-1] = id
 
     def input(self, c: str) -> List[str]:
-        if c != '#':
-            self.query += c
-            self.cur = self.cur.next[c]
-            return [self.id2query[id_] for id_ in sorted(self.cur.top3, key=self.comp)]
-        else:
-            self._update(self.query)
-            self.query = ''
+        if c == '#':
+            self.genId(self.buf)
+            self.s2cnt[self.buf] += 1
+            self.update(self.buf)
+            self.buf = ''
             self.cur = self.root
+        else:
+            self.buf += c
+            self.cur = self.cur.next[c]
+            return sorted(list(map(lambda x: self.id2s[x], self.cur.top)), key=lambda x: (-self.s2cnt[x], x))
 
 # Your AutocompleteSystem object will be instantiated and called as such:
 # obj = AutocompleteSystem(sentences, times)
