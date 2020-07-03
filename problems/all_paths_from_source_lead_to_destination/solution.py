@@ -1,16 +1,20 @@
+from collections import defaultdict, Counter
+
 class Solution:
-    def leadsToDestination(self, n: int, edges: List[List[int]],
-                           source: int, destination: int) -> bool:
-        dp, seen, adj = [None]*n, set(), [set() for _ in range(n)]
+    def leadsToDestination(self, n: int, edges: List[List[int]], source: int, destination: int) -> bool:
+        adj = defaultdict(list)
         for u, v in edges:
-            adj[u].add(v)
+            adj[u].append(v)
+        seen = Counter()
+        seen[source] += 1
         def dfs(n: int) -> bool:
-            if n == destination:
-                return not adj[n]
-            if dp[n] is None:
-                if not adj[n] or n in seen:
-                    return False
-                seen.add(n)
-                dp[n] = all([dfs(nn) for nn in adj[n]])
-            return dp[n]
+            if not adj[n]: return n == destination
+            if n == destination: return False
+            for nn in adj[n]:
+                if seen[nn] > 1: return False
+                seen[nn] += 1
+                tmp = dfs(nn)
+                seen[nn] -= 1
+                if not tmp: return False
+            return True
         return dfs(source)
