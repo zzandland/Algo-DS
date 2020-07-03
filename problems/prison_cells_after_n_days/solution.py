@@ -1,11 +1,12 @@
 class Solution:
     def prisonAfterNDays(self, cells: List[int], N: int) -> List[int]:
-        it, seen, = cells[:], {}
-        while N > 0:
-            t = tuple(it)
-            if t in seen: N %= seen[t]-N
-            seen[tuple(it)] = N
-            if N == 0: return it
-            it = [int(i > 0 and i < len(cells)-1 and it[i-1] == it[i+1]) for i, _ in enumerate(it)]
-            N -= 1
-        return it
+        L = len(cells)
+        def transform(c: List[int]) -> List[int]:
+            res = [0]*L
+            for i in range(1, L-1):
+                res[i] = int(not(c[i-1] != c[i+1]))
+            return res
+        N = 14 if N % 14 == 0 else N % 14
+        for _ in range(N):
+            cells = transform(cells)
+        return cells
