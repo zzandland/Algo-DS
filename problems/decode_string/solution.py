@@ -2,19 +2,19 @@ from collections import deque
 
 class Solution:
     def decodeString(self, s: str) -> str:
-        q, st, buf = deque(s), [], ''
-        while q:
-            c = q.popleft()
-            if c.isdigit():
-                digit = ''
-                while c.isdigit():
-                    digit += c
+        q = deque(s)
+        def dfs() -> str:
+            res = []
+            while q:
+                c = q.popleft()
+                if c == ']': return ''.join(res)
+                elif c.isdigit():
+                    num = c
                     c = q.popleft()
-                st.append((int(digit), buf))
-                buf = ''
-            elif c == ']':
-                mul, p = st.pop()
-                buf = p + mul*buf
-            else:
-                buf += c
-        return buf         
+                    while c.isdigit():
+                        num += c
+                        c = q.popleft()
+                    res.append(int(num) * dfs())
+                else: res.append(c)
+            return ''.join(res)
+        return dfs()
