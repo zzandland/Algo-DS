@@ -1,18 +1,23 @@
+from collections import defaultdict
+
 class Solution:
     def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
-        graph, visited, st = [set() for _ in range(numCourses)], set(), []
-        for b, a in prerequisites: graph[a].add(b)
+        res, out_seen = [], set()
+        adj = defaultdict(list)
+        for u, v in prerequisites:
+            adj[u].append(v)
         def dfs(n: int) -> bool:
-            if n in visited: return True
-            if n in tmp:  return False
-            tmp.add(n)
-            for nxt in graph[n]:
-                if not dfs(nxt): return False
-            st.append(n)
-            tmp.remove(n)
-            visited.add(n)
+            nonlocal res
+            for nn in adj[n]:
+                if nn in seen: return False
+                if nn not in out_seen:
+                    seen.add(nn)
+                    if not dfs(nn): return False
+                    seen.remove(nn)
+            res.append(n)
+            out_seen.add(n)
             return True
-        for i in range(numCourses): 
-            tmp = set()
-            if not dfs(i): return []
-        return st[::-1]    
+        for i in range(numCourses):
+            seen = set([i])
+            if i not in out_seen and not dfs(i): return []
+        return res
