@@ -1,8 +1,12 @@
+from collections import Counter
+
 class Solution:
     def isIsomorphic(self, s: str, t: str) -> bool:
-        aDic, bDic = {}, {}
-        for i in range(len(s)):
-            aDic.setdefault(s[i], t[i])
-            bDic.setdefault(t[i], s[i])
-            if t[i] != aDic[s[i]] or s[i] != bDic[t[i]]: return False
+        ad, seen = {}, set()
+        for i, c in enumerate(s):
+            if c not in ad:
+                if t[i] in seen: return False
+                ad[c] = t[i]
+                seen.add(t[i])
+            elif ad[c] != t[i]: return False
         return True
