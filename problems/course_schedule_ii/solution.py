@@ -1,23 +1,25 @@
-from collections import defaultdict
+from collections import defaultdict, deque
 
 class Solution:
     def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
-        res, out_seen = [], set()
-        adj = defaultdict(list)
+        adj, in_degree = defaultdict(list), [0]*numCourses
+        
+        # make adj list & in_degree O(E)
         for u, v in prerequisites:
-            adj[u].append(v)
-        def dfs(n: int) -> bool:
-            nonlocal res
-            for nn in adj[n]:
-                if nn in seen: return False
-                if nn not in out_seen:
-                    seen.add(nn)
-                    if not dfs(nn): return False
-                    seen.remove(nn)
+            adj[v].append(u)
+            in_degree[u] += 1
+            
+        # put all nodes with 0 incoming edge to a queue O(V)
+        q = deque([i for i in range(numCourses) if in_degree[i] == 0])
+        
+        # BFS on the nodes with 0 incoming edge O(V+E)
+        cnt, res = 0, []
+        while q:
+            n = q.popleft()
             res.append(n)
-            out_seen.add(n)
-            return True
-        for i in range(numCourses):
-            seen = set([i])
-            if i not in out_seen and not dfs(i): return []
+            for nn in adj[n]:
+                in_degree[nn] -= 1
+                if in_degree[nn] == 0: q.append(nn)
+            cnt += 1
+        if cnt != numCourses: return []
         return res
