@@ -10,16 +10,22 @@ class Node:
 
 class Solution:
     def flatten(self, head: 'Node') -> 'Node':
-        def dfs(n: Node) -> Node:
-            if not n: return None
-            while n.next:
+        def helper(n: Node) -> Node:
+            p = None
+            while n:
                 if n.child:
-                    nxt = n.next
-                    n.next, n.child.prev, n.child = n.child, n, None
-                    n = dfs(n.next)
-                    n.next, nxt.prev = nxt, n    
-                n = n.next    
-            if n.child: n.next, n.child.prev, n.child = dfs(n.child), n, None
-            return n        
-        dfs(head)
+                    tmp = n.next
+                    n.next = n.child
+                    n.next.prev = n
+                    n.child = None
+                    child_tail = helper(n.next)
+                    child_tail.next = tmp
+                    if tmp: tmp.prev = child_tail
+                    n = tmp
+                    p = child_tail
+                else:
+                    p = n
+                    n = n.next
+            return p
+        helper(head)
         return head
