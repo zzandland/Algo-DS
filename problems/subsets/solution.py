@@ -1,8 +1,13 @@
 class Solution:
     def subsets(self, nums: List[int]) -> List[List[int]]:
         N = len(nums)
-        def dq(i: int) -> List[List[int]]:
-            if i == N: return []
-            n = nums[i]
-            return [[n]] + [[n] + st for st in dq(i+1)] + dq(i+1)
-        return [[]] + dq(0)
+        tmp, res = [], []
+        def fn(i: int) -> None:
+            res.append(tmp[:])
+            if i == N: return
+            for j in range(i, N):
+                tmp.append(nums[j])
+                fn(j+1)
+                tmp.pop()
+        fn(0)
+        return res
