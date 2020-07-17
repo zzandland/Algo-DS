@@ -1,8 +1,9 @@
+from heapq import nlargest, heapify
 from collections import Counter
-import heapq
 
 class Solution:
     def topKFrequent(self, nums: List[int], k: int) -> List[int]:
-        hp = [(-cnt, num) for (num, cnt) in Counter(nums).items()]
-        heapq.heapify(hp)
-        return [heapq.heappop(hp)[1] for _ in range(k)]
+        c = Counter(nums)
+        d = [(f, n) for n, f in c.items()]
+        heapify(d)
+        return map(lambda x: x[1], nlargest(k, d))
