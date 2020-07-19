@@ -1,27 +1,29 @@
 class Solution:
     def numIslands2(self, m: int, n: int, positions: List[List[int]]) -> List[int]:
-        if m == 0 or n == 0: return 0
-        dp, cnt = [-1 for i in range(m*n)], 0
+        V = [-1 for i in range(m*n)]
         
         def find(n: int) -> int:
-            if dp[n] != n: dp[n] = find(dp[n])
-            return dp[n]    
+            if V[n] != n: V[n] = find(V[n])
+            return V[n]
         
-        def union(a: int, b: int) -> None:
-            fa, fb = find(a), find(b)
-            dp[fa] = b
-                
-        output = []        
+        def union(n1: int, n2: int) -> bool:
+            f1, f2 = find(n1), find(n2)
+            if f1 != f2:
+                V[f1] = f2
+                return True
+            return False
+        
+        dir_ = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+        res = []
+        cnt = 0
         for y, x in positions:
-            o = y*n+x
-            if dp[o] == -1:
+            l = y*n + x
+            if V[l] == -1:
+                V[l] = l
                 cnt += 1
-                dp[o] = o
-                for r, c in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-                    ny, nx = y+r, x+c
-                    no = ny*n+nx
-                    if 0 <= ny < m and 0 <= nx < n and dp[no] != -1 and find(o) != find(no):
-                        cnt -= 1
-                        union(o, no)
-            output.append(cnt)        
-        return output    
+                for ny, nx in ((y+r, x+c) for r, c in dir_):
+                    nl = ny*n + nx
+                    if 0 <= ny < m and 0 <= nx < n and V[nl] != -1:
+                        if union(l, nl): cnt -= 1
+            res.append(cnt)
+        return res
