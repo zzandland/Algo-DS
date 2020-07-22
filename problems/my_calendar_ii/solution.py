@@ -1,17 +1,20 @@
+(10, 1), (20, -1), (50,)
+
 class MyCalendarTwo:
 
     def __init__(self):
-        self.s = set()
-        self.d = set()
-
+        self.changes = []
+        
     def book(self, start: int, end: int) -> bool:
-        for ds, de in self.d:
-            if start >= de or end <= ds: continue
-            else: return False
-        for ss, se in self.s:
-            if start >= se or end <= ss: continue
-            else: self.d.add((max(start, ss), min(end, se)))
-        self.s.add((start, end))
+        tmp = self.changes[:]
+        tmp.append((start, 1))
+        tmp.append((end, -1))
+        tmp.sort()
+        curr = 0
+        for time, change in tmp:
+            curr += change
+            if curr > 2: return False
+        self.changes = tmp
         return True
 
 # Your MyCalendarTwo object will be instantiated and called as such:
