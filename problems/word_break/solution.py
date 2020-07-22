@@ -1,10 +1,18 @@
 class Solution:
     def wordBreak(self, s: str, wordDict: List[str]) -> bool:
-        S, ws = len(s), set(wordDict)
-        trues = [0]
-        for i in range(1, S+1):
-            for j in range(len(trues)-1, -1, -1):
-                if s[trues[j]:i] in ws:
-                    trues.append(i)
-                    break
-        return trues[-1] == S
+        if not s: return True
+        if not wordDict: return False
+        st = set(wordDict)
+        lgst = max(map(len, wordDict))
+        dp = {}
+        def dfs(i: int) -> bool:
+            if i == len(s): return True
+            if i not in dp:
+                for j in range(lgst+1):
+                    if s[i:i+j+1] in st and dfs(i+j+1):
+                        dp[i] = True
+                        break
+                else:
+                    dp[i] = False
+            return dp[i]
+        return dfs(0)
