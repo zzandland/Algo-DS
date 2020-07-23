@@ -1,10 +1,12 @@
 class Solution:
     def getPermutation(self, n: int, k: int) -> str:
-        total, rem, t, res, run = math.factorial(n), list(range(1, n+1)), k-1, '', 0
-        while n > 0:
-            div = total // n
-            res += str(rem.pop(t // div))
-            t %= div
-            total //= n
-            n -= 1
-        return res
+        total = reduce(lambda x, y: x* y, range(1, n+1))
+        k -= 1
+        res = []
+        valid = list(range(1, n+1))
+        for i in range(n, 0, -1):
+            m = total // i
+            total //= i
+            idx, k = divmod(k, m)
+            res.append(str(valid.pop(idx)))
+        return ''.join(res)
