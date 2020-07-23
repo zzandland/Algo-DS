@@ -1,13 +1,12 @@
 class Solution:
     def permuteUnique(self, nums: List[int]) -> List[List[int]]:
-        if not nums: return []
         nums.sort()
         q = [[]]
-        for i, n in enumerate(nums):
+        for n in nums:
             nq = []
-            for p in q:
-                for j in range(len(p)+1):
-                    if j > 0 and n == p[j-1]: break
-                    nq.append(p[:j]+[n]+p[j:])
+            for perm in q:
+                for i in range(len(perm) + 1):
+                    if i > 0 and n == perm[i-1]: break
+                    nq.append(perm[:i] + [n] + perm[i:])
             q = nq
         return q
