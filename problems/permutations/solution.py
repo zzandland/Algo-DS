@@ -1,11 +1,10 @@
 class Solution:
     def permute(self, nums: List[int]) -> List[List[int]]:
-        if not nums: return []
-        res = [[]]
+        q = [[]]
         for n in nums:
-            nres = []
-            for p in res:
-                for i in range(len(p)+1):
-                    nres.append(p[:i]+[n]+p[i:])
-            res = nres
-        return res
+            nq = []
+            for perm in q:
+                for i in range(len(perm)+1):
+                    nq.append(perm[:i] + [n] + perm[i:])
+            q = nq
+        return q
