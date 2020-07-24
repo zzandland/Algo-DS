@@ -1,12 +1,15 @@
 class Solution:
     def minCut(self, s: str) -> int:
-        N = len(s)
-        dp1, dp2 = [[None]*N for _ in range(N)], [-1]+[float('inf')]*N
-        for y in range(N-1, -1, -1):
-            dp1[y][y] = True
-            for x in range(y+1, N):
-                dp1[y][x] = s[y] == s[x] and (dp1[y+1][x-1] or x-y == 1)
-        for i in range(1, N+1):
-            for j in range(0, i):
-                if dp1[j][i-1]: dp2[i] = min(dp2[i], 1 + dp2[j])
+        S = len(s)
+        dp = [[False]*S for _ in range(S)]
+        for i in range(S-1, -1, -1):
+            dp[i][i] = True
+            for j in range(i+1, S):
+                if s[i] == s[j]:
+                    dp[i][j] = dp[i+1][j-1] or j - i == 1
+        
+        dp2 = [-1] + [float('inf')]*S
+        for i in range(S):
+            for j in range(i+1):
+                if dp[j][i]: dp2[i+1] = min(dp2[i+1], 1 + dp2[j])
         return dp2[-1]
