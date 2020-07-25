@@ -1,28 +1,25 @@
 class Solution:
     def orangesRotting(self, grid: List[List[int]]) -> int:
-        if not grid:
-            return 0
-        R, C = len(grid), len(grid[0])
-        q, r = [], 0
-        for y in range(R):
-             for x in range(C):
-                if grid[y][x] == 2:
-                    q.append([y, x])
-                elif grid[y][x] == 1:
-                    r += 1
-        if r == 0:
-            return 0
+        M, N = len(grid), len(grid[0])
+        
+        # count oranges and save coords of rottens O(grid)
+        oranges, q = 0, []
+        for y in range(M):
+            for x in range(N):
+                if grid[y][x] == 1: oranges += 1
+                elif grid[y][x] == 2: q.append((y, x))
+                    
+        # rot fresh oranges until no more can be done O(grid)
+        time = 0
         dir_ = ((1, 0), (-1, 0), (0, 1), (0, -1))
-        res = 0
-        while q:
-            if r == 0:
-                return res
+        while True:
             nq = []
-            for ny, nx in [[y+r, x+c] for y, x in q for r, c in dir_]:
-                if 0 <= ny < R and 0 <= nx < C and grid[ny][nx] == 1:
-                    r -= 1
-                    grid[ny][nx] = 2
-                    nq.append([ny, nx])
-            res += 1
+            for y, x in q:
+                for ny, nx in ((y+r, x+c) for r, c in dir_):
+                    if 0 <= ny < M and 0 <= nx < N and grid[ny][nx] == 1:
+                        grid[ny][nx] = 2
+                        oranges -= 1
+                        nq.append((ny, nx))
             q = nq
-        return -1
+            if not q: return time if oranges == 0 else -1
+            time += 1
