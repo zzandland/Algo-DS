@@ -1,20 +1,14 @@
 class Solution:
     def maxProfit(self, prices: List[int], fee: int) -> int:
-        """
-        define state machine
-        1) sold -> only from selling stock (held + price)
-        2) held 
-            a) from buying stock right after selling (sold - price - fee)
-            b) from buying stock from reset (reset - price - fee)
-            c) from holdiing onto stock (held)
-        3) reset
-            a) from resting (reset)
-            b) from just sold stock (sold)
-        """
-        # initial state can only be reset
-        reset, sold, held = 0, float('-inf'), float('-inf')
+        # 3 states:
+        # 1. free: come from sold last turn (sold[i-1]) or resting (free[i-1])
+        # 2. sold: come from selling (held[i-1] + prices[i])
+        # 3. held: come from free (free[i-1] - prices[i] - fee) or resting (held[i-1]) or buy after sell (sold[i-1] - prices[i] - fee)
+        # initially you can only be at 'free' state
+        free, sold, held = 0, float('-inf'), float('-inf')
         for price in prices:
-            held = max(sold - price - fee, reset - price - fee, held)
-            reset = max(reset, sold)
+            total = price + fee
+            free = max(sold, free)
+            held = max(free - total, held, sold - total)
             sold = held + price
-        return max(reset, sold)
+        return max(free, sold)
