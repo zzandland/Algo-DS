@@ -38,8 +38,8 @@
     #  Explanation:
         #  "betacellular" is occuring in 3 different reviews. "anacell" and "deltacellular" are occuring in 2 reviews, but "anacell" is lexicographically smaller.
 
-import collections
-import heapq
+#  import collections
+#  import heapq
 
 #  def topKFrequentKeywords(k, keywords, reviews):
     #  d = defaultdict(int)
@@ -59,43 +59,69 @@ import heapq
             #  if i == k:
                 #  return output
 
-class Ele:
-    def __init__(self, word, freq):
-        self.word = word
-        self.freq = freq
+#  class Ele:
+    #  def __init__(self, word, freq):
+        #  self.word = word
+        #  self.freq = freq
 
-    def __lt__(self, other):
-        if self.freq == other.freq:
-            return self.word < other.word
-        return self.freq > other.freq
+    #  def __lt__(self, other):
+        #  if self.freq == other.freq:
+            #  return self.word < other.word
+        #  return self.freq > other.freq
+
+#  def topKFrequentKeywords(k, keywords, reviews):
+    #  wordLists = []
+    #  for review in reviews:
+        #  wordLists += set(review.lower().split())
+    #  count = collections.Counter(wordLists)
+    #  hp = []
+    #  for word, freq in count.items():
+        #  if word in keywords:
+            #  heapq.heappush(hp, Ele(word, freq))
+            #  if len(hp) > k:
+                #  heapq.heappop(hp)
+    #  return [heapq.heappop(hp).word for _ in range(k)][::-1]
+
+from heapq import heapify, heappop
+from collections import Counter
 
 def topKFrequentKeywords(k, keywords, reviews):
-    wordLists = []
-    for review in reviews:
-        wordLists += set(review.lower().split())
-    count = collections.Counter(wordLists)
-    hp = []
-    for word, freq in count.items():
-        if word in keywords:
-            heapq.heappush(hp, Ele(word, freq))
-            if len(hp) > k:
-                heapq.heappop(hp)
-    return [heapq.heappop(hp).word for _ in range(k)][::-1]
+    """
+    >>> topKFrequentKeywords(2, keywords1, reviews1)
+    ['anacell', 'betacellular']
+    >>> topKFrequentKeywords(2, keywords2, reviews2)
+    ['betacellular', 'anacell']
+    """
+    c, wordSet = Counter(), set(keywords)
 
-keywords = ["anacell", "cetracular", "betacellular"]
-reviews = [
+    # split review into words and find intersection with keywords O(keywords * min(keywords, words))
+    for review in reviews:
+        for word in set(review.lower().split()) & wordSet:
+            c[word] += 1
+
+    # max-heapify words by counts O(words)
+    pq = [(-cnt, word) for word, cnt in c.items()]
+    heapify(pq)
+
+    # heappop k words from the heap O(k log words)
+    return [heappop(pq)[1] for _ in range(k)]
+
+keywords1 = ["anacell", "cetracular", "betacellular"]
+reviews1 = [
 "Anacell provides the best services in the city",
 "betacellular has awesome services",
 "Best services provided by anacell, everyone should use anacell",
 ]
 
-#  keywords = ["anacell", "betacellular", "cetracular", "deltacellular", "eurocell"]
-#  reviews = [
-#  "I love anacell Best services; Best services provided by anacell",
-#  "betacellular has great services",
-#  "deltacellular provides much better services than betacellular",
-#  "cetracular is worse than anacell",
-#  "Betacellular is better than deltacellular.",
-#  ]
+keywords2 = ["anacell", "betacellular", "cetracular", "deltacellular", "eurocell"]
+reviews2 = [
+"I love anacell Best services; Best services provided by anacell",
+"betacellular has great services",
+"deltacellular provides much better services than betacellular",
+"cetracular is worse than anacell",
+"Betacellular is better than deltacellular.",
+]
 
-print(topKFrequentKeywords(2, keywords, reviews))
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
