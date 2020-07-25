@@ -4,14 +4,20 @@ class Solution:
         Do not return anything, modify rooms in-place instead.
         """
         if not rooms: return
-        R, C, INF = len(rooms), len(rooms[0]), 2147483647
-        q, nq, d = {(y, x) for y in range(R) for x in range(C) if rooms[y][x] == 0}, set(), 0
+        M, N = len(rooms), len(rooms[0])
+        
+        # find coords of doors O(rooms)
+        q = [(y, x) for y in range(M) for x in range(N) if rooms[y][x] == 0]
+        
+        # increment distance in BFS O(rooms)
+        dist = 1
+        dir_ = ((1, 0), (-1, 0), (0, 1), (0, -1))
         while q:
-            d += 1
+            nq = []
             for y, x in q:
-                for r, c in ((0, 1), (0, -1), (1, 0), (-1, 0)):
-                    ny, nx = y+r, x+c
-                    if 0 <= ny < R and 0 <= nx < C and rooms[ny][nx] == INF:
-                        rooms[ny][nx] = d
-                        nq.add((ny, nx))
-            q, nq = nq, set()
+                for ny, nx in ((y+r, x+c) for r, c in dir_):
+                    if 0 <= ny < M and 0 <= nx < N and rooms[ny][nx] > dist:
+                        rooms[ny][nx] = dist
+                        nq.append((ny, nx))
+            q = nq
+            dist += 1
