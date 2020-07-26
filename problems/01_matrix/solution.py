@@ -1,26 +1,29 @@
-from collections import deque
-
 class Solution:
     def updateMatrix(self, matrix: List[List[int]]) -> List[List[int]]:
-        if not matrix:
-            return []
-        R, C = len(matrix), len(matrix[0])
-        dir_, cnt = ((1, 0), (-1, 0), (0, 1), (0, -1)), -1
-        seen, q = [[False]*C for _ in range(R)], deque()
-        for r in range(R):
-            for c in range(C):
-                if matrix[r][c] == 0:
-                    q.append((r, c))
-                    seen[r][c] = True
+        if not matrix: return matrix
+        M, N = len(matrix), len(matrix[0])
+        seen = set()
+        q = []
+        
+        # get all zeros O(matrix)
+        for y in range(M):
+            for x in range(N):
+                if matrix[y][x] == 0:
+                    seen.add((y, x))
+                    q.append((y, x))
+                    
+        dir_ = ((1, 0), (-1, 0), (0, 1), (0, -1))
+        
+        # flood-fill all non-zero cells O(matrix)
+        cnt = 0
         while q:
+            nq = []
             cnt += 1
-            l = len(q)
-            for _ in range(l):
-                r, c = q.popleft()
-                matrix[r][c] = cnt
-                for y, x in dir_:
-                    nr, nc = r+y, c+x
-                    if 0 <= nr < R and 0 <= nc < C and not seen[nr][nc]:
-                        seen[nr][nc] = True
-                        q.append((nr, nc))
+            for y, x in q:
+                for ny, nx in ((y+r, x+c) for r, c in dir_):
+                    if 0 <= ny < M and 0 <= nx < N and (ny, nx) not in seen:
+                        seen.add((ny, nx))
+                        matrix[ny][nx] = cnt
+                        nq.append((ny, nx))
+            q = nq        
         return matrix
