@@ -6,15 +6,13 @@
 #         self.right = right
 class Solution:
     def isSubtree(self, s: TreeNode, t: TreeNode) -> bool:
-        def fn(a: TreeNode, b: TreeNode) -> bool:
-            if not a and not b:
-                return True
-            if not a or not b:
-                return False
-            if a.val == b.val:
-                if fn(a.left, b.left) and fn(a.right, b.right):
-                    return True
-            if b == t:
-                return fn(a.left, t) or fn(a.right, t)
-            return False
-        return fn(s, t)
+        # O(s * t)
+        if not s: return False
+        if self.helper(s, t): return True
+        return self.isSubtree(s.left, t) or self.isSubtree(s.right, t)
+    
+    def helper(self, s: TreeNode, t: TreeNode) -> bool:
+        if not s and not t: return True
+        if not s or not t: return False
+        if s.val != t.val: return False
+        return self.helper(s.left, t.left) and self.helper(s.right, t.right)
