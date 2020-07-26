@@ -12,29 +12,38 @@ matrix = [['S', 'O', 'O', 'S', 'S'], ['D', 'O', 'D', 'O', 'D'], ['O', 'O', 'O', 
 #  You can start from (0,0), (0, 3) or (0, 4). The treasure locations are (2, 4) (3, 0) and (4, 0). Here the shortest route is (0, 3), (1, 3), (2, 3), (2, 4).
 
 from typing import List
-from collections import deque
 
 def treasureIsland2(matrix: List[List[str]]) -> int:
+    '''
+    >>> treasureIsland2(matrix)
+    3
+    '''
     if not matrix: return -1
-    R, C, dir_, d = len(matrix), len(matrix[0]), [(1, 0), (-1, 0), (0, 1), (0, -1)], 0
-    q = deque()
-    for y in range(R):
-        for x in range(C):
+    M, N, dir_ = len(matrix), len(matrix[0]), [(1, 0), (-1, 0), (0, 1), (0, -1)]
+    cnt = 0
+
+    # get all starting coords O(matrix)
+    q = []
+    for y in range(M):
+        for x in range(N):
             if matrix[y][x] == 'S':
-                q.append((y, x))
                 matrix[y][x] = 'D'
+                q.append((y, x))
+
+    # bfs until any treasure is found O(matrix)
     while q:
-        d+=1
-        l = len(q)
-        for _ in range(l):
-            y, x = q.popleft()
-            for r, c in dir_:
-                ny, nx = y+r, x+c
-                if 0 <= ny < R and 0 <= nx < C:
-                    if matrix[ny][nx] == 'X': return d
-                    elif matrix[ny][nx] == 'O':
-                        q.append((ny, nx))
+        nq = []
+        cnt += 1
+        for y, x in q:
+            for ny, nx in ((y+r, x+c) for r, c in dir_):
+                if 0 <= ny < M and 0 <= nx < N:
+                    if matrix[ny][nx] == 'X': return cnt
+                    if matrix[ny][nx] == 'O':
                         matrix[ny][nx] = 'D'
+                        nq.append((ny, nx))
+        q = nq
     return -1
 
-print(treasureIsland2(matrix))
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()

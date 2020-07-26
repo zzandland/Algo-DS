@@ -11,25 +11,29 @@ m = [['O', 'O', 'O', 'O'], ['D', 'O', 'D', 'O'], ['O', 'O', 'O', 'O'], ['X', 'D'
 #  Explanation: Route is (0, 0), (0, 1), (1, 1), (2, 1), (2, 0), (3, 0) The minimum route takes 5 steps.
 
 from typing import List
-from collections import deque
 
 def treasureIsland(map_: List[List[str]]) -> int:
-    if not map_: return 0
+    '''
+    >>> treasureIsland(m)
+    5
+    '''
+    if not map_: return -1
     R, C = len(map_), len(map_[0])
-    q, t, dir_ = deque([(0, 0)]), 0, [(1, 0), (-1, 0), (0, 1), (0, -1)]
+    q, t, dir_ = [(0, 0)], 0, ((1, 0), (-1, 0), (0, 1), (0, -1))
     map_[0][0] = 'D'
     while q:
         t += 1
-        l = len(q)
-        for _ in range(l):
-            y, x = q.popleft()
-            for r, c in dir_:
-                ny, nx = y+r, x+c
+        nq = []
+        for y, x in q:
+            for ny, nx in ((y+r, x+c) for r, c in dir_):
                 if 0 <= ny < R and 0 <= nx < C:
                     if map_[ny][nx] == 'X': return t
                     if map_[ny][nx] == 'O':
                         map_[ny][nx] = 'D'
-                        q.append((ny, nx))
+                        nq.append((ny, nx))
+        q = nq
     return -1
 
-print(treasureIsland(m))
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
