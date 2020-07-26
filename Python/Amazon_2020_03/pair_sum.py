@@ -7,16 +7,23 @@
 #  If you have muliple pairs, select the pair with the largest number.
 
 def pair_sum(nums, target):
-    dc, max_, pair = {}, float('-inf'), []
-    for i, num in enumerate(nums):
-        rem = target-num-30
-        print(i, num, rem, dc)
-        if rem in dc and (num > max_ or rem > max_):
-            pair = [dc[rem], i]
-            max_ = max(num, rem)
-        dc[num] = i
-    return pair
+    '''
+    >>> pair_sum([1, 10, 25, 35, 60], 90)
+    [2, 3]
+    >>> pair_sum([20, 50, 40, 25, 30, 10], 90)
+    [1, 5]
+    '''
+    seen = {}
+    res = []
 
-nums = [20, 50, 40, 25, 30, 10]
-target = 90
-print(pair_sum(nums, target))
+    # iterate the nums and update repetitively as soon as target - 30 is found O(n)
+    for i, n in enumerate(nums):
+        rest = target - 30 - n
+        if rest in seen: res = [seen[rest], i]
+        seen[n] = i
+
+    return res
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
