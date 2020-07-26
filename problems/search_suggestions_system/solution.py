@@ -1,22 +1,26 @@
+from heapq import heappush, nsmallest
 from collections import defaultdict
 
-class Node:
+class Trie:
     def __init__(self):
-        self.next = defaultdict(Node)
-        self.wds = []
+        self.next = defaultdict(Trie)
+        self.words = []
 
 class Solution:
     def suggestedProducts(self, products: List[str], searchWord: str) -> List[List[str]]:
-        products.sort()
-        id2p, trie = {}, Node()
-        for i, p in enumerate(products):
+        # create trie of all characters in products O(products * longest word product)
+        trie = Trie()
+        for product in products:
             n = trie
-            id2p[i] = p
-            for c in p:
+            for c in product:
+                heappush(n.words, product)
                 n = n.next[c]
-                n.wds.append(i)
-        n, res = trie, []
-        for s in searchWord:
-            n = n.next[s]
-            res.append([id2p[id_] for id_ in n.wds[:3]])
+            heappush(n.words, product)
+            
+        res = []
+        n = trie
+        for c in searchWord:
+            n = n.next[c]
+            res.append(nsmallest(3, n.words))
+            
         return res
