@@ -1,9 +1,10 @@
 class Solution:
     def minPathSum(self, grid: List[List[int]]) -> int:
-        for y, row in enumerate(grid):
-            for x, col in enumerate(row):
-                if y == 0 and x == 0: continue
-                top = float('inf') if y == 0 else grid[y-1][x]
-                left = float('inf') if x == 0 else row[x-1]
-                grid[y][x] += min(top, left)
-        return grid[-1][-1]        
+        if not grid: return 0
+        M, N = len(grid), len(grid[0])
+        dp = [[float('inf')]*(N+1) for _ in range(M+1)]
+        dp[0][1] = dp[1][0] = 0
+        for y in range(1, M+1):
+            for x in range(1, N+1):
+                dp[y][x] = min(dp[y-1][x], dp[y][x-1]) + grid[y-1][x-1]
+        return dp[-1][-1]
