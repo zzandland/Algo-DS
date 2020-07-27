@@ -5,7 +5,7 @@
 #  Example 1:
 
 #  Input:
-grid = [[5, 1], [4, 5]]
+grid1 = [[5, 1], [4, 5]]
 
 #  Output: 4
 #  Explanation:
@@ -16,7 +16,7 @@ grid = [[5, 1], [4, 5]]
 #  Example 2:
 
 #  Input:
-#  grid = [[1, 2, 3], [4, 5, 1]]
+grid2 = [[1, 2, 3], [4, 5, 1]]
 
 #  Output: 4
 #  Explanation:
@@ -27,43 +27,65 @@ grid = [[5, 1], [4, 5]]
 #  So min of all the paths = [2, 2, 4]. Note that we don't include the first and final entry.
 #  Return the max of that, so 4.
 
-import heapq
+#  import heapq
 
-def maxMinAlt(grid):
-    R, C = len(grid), len(grid[0])
-    seen, dir_ = [[False for _ in range(C)] for _ in range(R)], [(0, 1),(1, 0)]
-    def diijkstra():
-        hp, min_ = [(-grid[0][0], 0, 0)], float('inf')
-        while hp:
-            print(hp, min_)
-            al, y, x = heapq.heappop(hp)
-            if y != 0 or x != 0: min_ = min(min_, grid[y][x])
-            seen[y][x] = True
-            for r, c in dir_:
-                ny, nx = y+r, x+c
-                if ny < R and nx < C and not seen[ny][nx]:
-                    if ny == R-1 and nx == C-1: return min_
-                    heapq.heappush(hp, (-grid[ny][nx], ny, nx))
-        return min_
-    def unionFind():
-        uf = [i for i in range(R*C)]
-        def find(x):
-            if uf[x] != x:
-                uf[x] = find(uf[x])
-            return uf[x]
-        def union(a, b):
-            ua, ub = find(a), find(b)
-            if ua != ub:
-                uf[ua] = ub
-        union(0, 1)
-        union(0, C)
-        for y, x in sorted([(r, c) for r in range(R) for c in range(C)], key=lambda x: grid[x[0]][x[1]], reverse=True):
-            seen[y][x] = True
-            print(grid[y][x], seen, uf)
-            for ver, hor in dir_:
-                ny, nx = y+ver, x+hor
-                if ny < R and nx < C and seen[y][x]: union(ny*C+nx, y*C+x)
-                if find(0) == find(R*C-1): return grid[y][x]
-    return unionFind()
+#  def maxMinAlt(grid):
+    #  R, C = len(grid), len(grid[0])
+    #  seen, dir_ = [[False for _ in range(C)] for _ in range(R)], [(0, 1),(1, 0)]
+    #  def diijkstra():
+        #  hp, min_ = [(-grid[0][0], 0, 0)], float('inf')
+        #  while hp:
+            #  print(hp, min_)
+            #  al, y, x = heapq.heappop(hp)
+            #  if y != 0 or x != 0: min_ = min(min_, grid[y][x])
+            #  seen[y][x] = True
+            #  for r, c in dir_:
+                #  ny, nx = y+r, x+c
+                #  if ny < R and nx < C and not seen[ny][nx]:
+                    #  if ny == R-1 and nx == C-1: return min_
+                    #  heapq.heappush(hp, (-grid[ny][nx], ny, nx))
+        #  return min_
+    #  def unionFind():
+        #  uf = [i for i in range(R*C)]
+        #  def find(x):
+            #  if uf[x] != x:
+                #  uf[x] = find(uf[x])
+            #  return uf[x]
+        #  def union(a, b):
+            #  ua, ub = find(a), find(b)
+            #  if ua != ub:
+                #  uf[ua] = ub
+        #  union(0, 1)
+        #  union(0, C)
+        #  for y, x in sorted([(r, c) for r in range(R) for c in range(C)], key=lambda x: grid[x[0]][x[1]], reverse=True):
+            #  seen[y][x] = True
+            #  print(grid[y][x], seen, uf)
+            #  for ver, hor in dir_:
+                #  ny, nx = y+ver, x+hor
+                #  if ny < R and nx < C and seen[y][x]: union(ny*C+nx, y*C+x)
+                #  if find(0) == find(R*C-1): return grid[y][x]
+    #  return unionFind()
 
-print(maxMinAlt(grid))
+from typing import List
+
+def max_min_alt(grid: List[List[int]]) -> int:
+    '''
+    >>> max_min_alt(grid1)
+    4
+    >>> max_min_alt(grid2)
+    4
+    '''
+    if not grid: return 0
+    M, N = len(grid), len(grid[0])
+    dp = [[float('inf')]*(N+1) for _ in range(M+1)]
+    grid[-1][-1] = float('inf')
+
+    for y in range(1, M+1):
+        for x in range(1, N+1):
+            dp[y][x] = max(min(dp[y-1][x], grid[y-1][x-1]), min(dp[y][x-1], grid[y-1][x-1]))
+
+    return dp[-1][-1]
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
