@@ -1,7 +1,5 @@
-from heapq import *
+from heapq import nsmallest
 
 class Solution:
     def kClosest(self, points: List[List[int]], K: int) -> List[List[int]]:
-        q = [(y*y+x*x, y, x) for y, x in points]
-        heapify(q)
-        return [[y, x] for _, y, x in nsmallest(K, q)]
+        return map(lambda x: [x[1], x[2]], nsmallest(K, [(y*y + x*x, y, x) for y, x in points]))
