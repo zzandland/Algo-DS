@@ -1,22 +1,13 @@
-from collections import defaultdict
-import heapq
+from collections import Counter
 
 class Solution:
     def leastInterval(self, tasks: List[str], n: int) -> int:
-        d = defaultdict(int)
-        for task in tasks:
-            d[task] -= 1
-        q = list(d.values())
-        heapq.heapify(q)
-        t = 0
-        while q:
-            tmp = []
-            for i in range(n+1):
-                t += 1
-                if q:
-                    j = heapq.heappop(q)
-                    if j+1 < 0: tmp.append(j+1)
-                if not tmp: break
-            for task in tmp:
-                heapq.heappush(q, task)    
-        return t
+        c = Counter(tasks)
+        mx_freq, mx_arr = 0, []
+        for task, freq in c.items():
+            if mx_freq < freq:
+                mx_arr.clear()
+                mx_freq = freq
+            if mx_freq == freq:
+                mx_arr.append(task)
+        return max(len(tasks), mx_freq * (n+1) - (n+1-len(mx_arr)))
