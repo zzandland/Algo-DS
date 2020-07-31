@@ -1,10 +1,10 @@
-from collections import defaultdict
 from heapq import heappush, heappop
+from collections import defaultdict
 
 class Solution:
     def highFive(self, items: List[List[int]]) -> List[List[int]]:
-        scores = defaultdict(list)
-        for stid, score in items:
-            heappush(scores[stid], score)
-            if len(scores[stid]) > 5: heappop(scores[stid])
-        return [[stid, sum(scoreList) // len(scoreList)] for stid, scoreList in scores.items()]
+        dic = defaultdict(list)
+        for i, score in items:
+            heappush(dic[i], score)
+            if len(dic[i]) > 5: heappop(dic[i])
+        return [[i, sum(scores) // len(scores)] for i, scores in dic.items()]
