@@ -1,12 +1,11 @@
+from collections import Counter
+
 class Solution:
     def firstUniqChar(self, s: str) -> int:
-        if not s: return -1
-        ids, d = set(), {}
+        seen_c = Counter()
+        c2idx = {}
         for i, c in enumerate(s):
-            if c not in d:
-                d[c] = i
-                ids.add(i)
-            elif c in d:
-                j = d[c]
-                if j in ids: ids.remove(j)
-        return min(ids) if ids else -1
+            seen_c[c] += 1
+            if seen_c[c] == 1: c2idx[c] = i
+            elif seen_c[c] > 1 and c in c2idx: del c2idx[c]
+        return min(c2idx.values()) if c2idx else -1
