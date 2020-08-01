@@ -10,15 +10,14 @@ class Node:
 
 class Solution:
     def connect(self, root: 'Node') -> 'Node':
-        leftMost = root
-        while leftMost:
-            n = leftMost
-            if not n.left:
-                break
-            while n:
-                n.left.next = n.right
-                if n.next:
-                    n.right.next = n.next.left
-                n = n.next
-            leftMost = leftMost.left
-        return root    
+        if not root: return None
+        q = [root]
+        while q:
+            for prev, cur in zip(q, q[1:]):
+                prev.next = cur
+            nq = []
+            for n in q:
+                if n.left: nq.append(n.left)
+                if n.right: nq.append(n.right)
+            q = nq
+        return root
