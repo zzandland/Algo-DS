@@ -1,40 +1,47 @@
+from collections import defaultdict
+
+class Node:
+    
+    def __init__(self):
+        self.end = False;
+        self.next = defaultdict(Node)
+
 class Trie:
 
     def __init__(self):
         """
         Initialize your data structure here.
         """
-        self.root = {}
+        self.trie = Node()
 
     def insert(self, word: str) -> None:
         """
         Inserts a word into the trie.
         """
-        n = self.root
+        n = self.trie
         for c in word:
-            n.setdefault(c, {})
-            n = n[c]
-        n['*'] = None
-            
+            n = n.next[c]
+        n.end = True
+
     def search(self, word: str) -> bool:
         """
         Returns if the word is in the trie.
         """
-        n = self.root
+        n = self.trie
         for c in word:
-            if c not in n: return False
-            n = n[c]
-        return '*' in n    
+            if c not in n.next: return False
+            n = n.next[c]
+        return n.end
 
     def startsWith(self, prefix: str) -> bool:
         """
         Returns if there is any word in the trie that starts with the given prefix.
         """
-        n = self.root
+        n = self.trie
         for c in prefix:
-            if c not in n: return False
-            n = n[c]
-        return True    
+            if c not in n.next: return False
+            n = n.next[c]
+        return True
 
 # Your Trie object will be instantiated and called as such:
 # obj = Trie()
