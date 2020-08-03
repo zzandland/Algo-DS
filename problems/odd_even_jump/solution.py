@@ -1,26 +1,22 @@
 class Solution:
     def oddEvenJumps(self, A: List[int]) -> int:
         N = len(A)
-        odds, evens = [False]*N, [False]*N
-        odds[-1] = evens[-1] = True
-        oddNext, evenNext = [-1]*N, [-1]*N
-        B = sorted(range(N), key=lambda x: A[x])
-        st = []
-        for n in B:
-            while st and st[-1] < n:
-                oddNext[st.pop()] = n
-            st.append(n)
-        st = []    
-        B.sort(key=lambda x: -A[x])
-        for n in B:
-            while st and st[-1] < n:
-                evenNext[st.pop()] = n
-            st.append(n)
+        def get_next(order: List[int]) -> List[int]:
+            st = []
+            res = [-1]*N
+            for n in order:
+                while st and st[-1] < n: res[st.pop()] = n
+                st.append(n)
+            return res
+        I = sorted(range(N), key=lambda x: A[x])
+        odd_next = get_next(I)
+        I.sort(key=lambda x: -A[x])
+        even_next = get_next(I)
+        odd, even = [False]*N, [False]*N
+        odd[-1] = even[-1] = True
         res = 1
-        for i in range(N-1, -1, -1):
-            if oddNext[i] != -1:
-                odds[i] = evens[oddNext[i]]
-                if odds[i]: res += 1
-            if evenNext[i] != -1:
-                evens[i] = odds[evenNext[i]]
+        for i in range(N-2, -1, -1):
+            if odd_next[i] != -1 and even[odd_next[i]]: odd[i] = True
+            if even_next[i] != -1 and odd[even_next[i]]: even[i] = True
+            if odd[i]: res += 1
         return res
