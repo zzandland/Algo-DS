@@ -1,10 +1,7 @@
-import heapq
-
 class Solution:
     def maxSubArray(self, nums: List[int]) -> int:
-        N, hp, mn, mx, run = len(nums), [], float('inf'), float('-inf'), 0
-        for num in nums:
-            run += num
-            mx = max(mx, run, run-mn)
-            mn = min(mn, run)
-        return mx    
+        res = nums[0]
+        for i in range(1, len(nums)):
+            if nums[i-1] > 0: nums[i] += nums[i-1]
+            res = max(res, nums[i])
+        return res
