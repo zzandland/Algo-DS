@@ -1,22 +1,20 @@
-from collections import defaultdict
-
 class WordDictionary:
 
     def __init__(self):
         """
         Initialize your data structure here.
         """
-        self.root = {}
+        self.trie = {}
 
     def addWord(self, word: str) -> None:
         """
         Adds a word into the data structure.
         """
-        n = self.root
+        n = self.trie
         for c in word:
             n.setdefault(c, {})
             n = n[c]
-        n['*'] = None
+        n['*'] = word;
 
     def search(self, word: str) -> bool:
         """
@@ -24,15 +22,12 @@ class WordDictionary:
         """
         N = len(word)
         def dfs(i: int, n: dict) -> bool:
+            if isinstance(n, str): return False
             if i == N: return '*' in n
-            c = word[i]
-            if c == '.':
-                for nxt in n:
-                    if nxt != '*' and dfs(i+1, n[nxt]): return True
-            elif c in n and dfs(i+1, n[c]):
-                return True
-            return False
-        return dfs(0, self.root)
+            if word[i] == '.': return any([dfs(i+1, nc) for nc in n.values()])
+            if word[i] not in n: return False
+            return dfs(i+1, n[word[i]])
+        return dfs(0, self.trie)
 
 # Your WordDictionary object will be instantiated and called as such:
 # obj = WordDictionary()
