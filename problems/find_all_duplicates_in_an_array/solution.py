@@ -3,7 +3,8 @@ class Solution:
         i = 0
         N = len(nums)
         while i < N:
-            j = nums[i]-1
-            if nums[i] != nums[j]: nums[i], nums[j] = nums[j], nums[i]
+            j = nums[i] - 1
+            if i != j and nums[j] != j+1: nums[i], nums[j] = nums[j], nums[i]
             else: i += 1
-        return [nums[i] for i in range(N) if nums[i] != i+1]
+                
+        return [n for i, n in enumerate(nums) if n-1 != i]
