@@ -1,12 +1,12 @@
 class Solution:
     def maxProduct(self, nums: List[int]) -> int:
         if not nums: return 0
-        mx = mn = 1
+        if len(nums) == 1: return nums[0]
         res = float('-inf')
+        mx = mn = 0
         for n in nums:
-            if n == 0: mx = mn = 0
-            else:
-                nmx, nmn = max(n, mx*n, mn*n), min(n, mx*n, mn*n)
-                mx, mn = nmx, nmn
+            nmx = max(mx*n, mn*n, n)
+            nmn = min(mx*n, mn*n, n)
+            mx, mn = nmx, nmn
             res = max(res, mx)
         return res
