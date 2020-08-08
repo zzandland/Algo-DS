@@ -10,7 +10,7 @@ class Solution:
         def dfs(n: TreeNode, run: int) -> int:
             if not n: return 0
             run += n.val
-            res = seen[run-sum]
+            res = seen[run - sum]
             seen[run] += 1
             res += dfs(n.left, run) + dfs(n.right, run)
             seen[run] -= 1
