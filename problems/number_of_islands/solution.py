@@ -1,22 +1,21 @@
+from collections import deque
+
 class Solution:
     def numIslands(self, grid: List[List[str]]) -> int:
         if not grid: return 0
-        M, N = len(grid), len(grid[0])
-        
+        m, n = len(grid), len(grid[0])
         res = 0
-        dir_ = ((1, 0), (-1, 0), (0, 1), (0, -1))
-        
-        # dfs to visit all connected lands O(grid)
-        def dfs(y: int, x: int) -> None:
-            for ny, nx in ((y+r, x+c) for r, c in dir_):
-                if 0 <= ny < M and 0 <= nx < N and grid[ny][nx] == '1':
-                    grid[ny][nx] = '0'
-                    dfs(ny, nx)
-        
-        # iterate all cells and visit if not visited O(grid)
-        for y in range(M):
-            for x in range(N):
+        dir_ = (-1, 0, 1, 0, -1)
+        for y in range(m):
+            for x in range(n):
                 if grid[y][x] == '1':
                     res += 1
-                    dfs(y, x)
+                    grid[y][x] = '0'
+                    q = deque([(y, x)])
+                    while q:
+                        r, c = q.popleft()
+                        for nr, nc in ((r+rr, c+cc) for rr, cc in zip(dir_, dir_[1:])):
+                            if 0 <= nr < m and 0 <= nc < n and grid[nr][nc] == '1':
+                                grid[nr][nc] = '0'
+                                q.append((nr, nc))
         return res
