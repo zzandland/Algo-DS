@@ -8,17 +8,16 @@ class Solution:
     def zigzagLevelOrder(self, root: TreeNode) -> List[List[int]]:
         if not root: return []
         q = [root]
-        res = []
+        ans = []
         lv = 0
         while q:
-            nq = []
-            tmp = []
+            nq, tmp = [], []
             for n in q:
                 tmp.append(n.val)
                 if n.left: nq.append(n.left)
                 if n.right: nq.append(n.right)
+            if lv & 1 == 1: tmp = tmp[::-1]
+            ans.append(tmp)
             q = nq
-            if lv & 1 == 1: res.append(tmp[::-1])
-            else: res.append(tmp)
             lv += 1
-        return res
+        return ans
