@@ -1,26 +1,24 @@
-from collections import defaultdict, deque, Counter
+from collections import defaultdict, deque
 
 class Solution:
-    def shortestAlternatingPaths(self, n: int, red_edges: List[List[int]],
-                                 blue_edges: List[List[int]]) -> List[int]:
-        radj, badj = defaultdict(list), defaultdict(list)
+    def shortestAlternatingPaths(self, n: int, red_edges: List[List[int]], blue_edges: List[List[int]]) -> List[int]:
+        res = [float('inf')]*n
+        radj, badj = defaultdict(set), defaultdict(set)
         for u, v in red_edges:
-            radj[u].append(v)
-        for u,v in blue_edges:
-            badj[u].append(v)
-        def bfs(r: bool) -> None:
-            nonlocal n
-            q, step, res, seen = deque([0]), -1, [float('inf')]*n, Counter()
-            while q:
-                step += 1
-                l = len(q)
-                r = not r
-                for _ in range(l):
-                    v = q.popleft()
-                    res[v] = min(res[v], step)
-                    for nv in radj[v] if r else badj[v]:
-                        if seen[v, nv] < 2:
-                            seen[v, nv] += 1
-                            q.append(nv)
-            return res
-        return [-1 if rn == float('inf') and bn == float('inf') else min(rn, bn) for rn, bn in zip(bfs(True), bfs(False))]
+            radj[u].add(v)
+        for u, v in blue_edges:
+            badj[u].add(v)
+        # node, red, dist
+        q = deque([(0, True, 0), (0, False, 0)])
+        while q:
+            n, red, dist = q.popleft()
+            res[n] = min(res[n], dist)
+            if red:
+                for nn in list(radj[n]):
+                    q.append((nn, False, dist+1))
+                    radj[n].remove(nn)
+            else:
+                for nn in list(badj[n]):
+                    q.append((nn, True, dist+1))
+                    badj[n].remove(nn)
+        return [n if n != float('inf') else -1 for n in res]
