@@ -1,5 +1,3 @@
-from collections import deque
-
 # Definition for singly-linked list.
 # class ListNode:
 #     def __init__(self, val=0, next=None):
@@ -11,19 +9,31 @@ class Solution:
         Do not return anything, modify head in-place instead.
         """
         if not head: return None
-        q = deque()
-        run = head
-        while run:
-            q.append(run)
-            run = run.next
-        res = run = None
-        while q:
-            tmp = q.popleft()
+        
+        half = run = head
+        while run and run.next:
+            half = half.next
+            run = run.next.next
+            
+        prev = None
+        while half:
+            tmp = half.next
+            half.next = prev
+            prev, half = half, tmp
+        
+        run = res = None
+        while head and prev:
+            tmp = head
+            head = head.next
             if run: run.next = tmp
             if not res: res = run
             run = tmp
-            if q: tmp = q.pop()
+            tmp = prev
+            prev = prev.next
             run.next = tmp
             run = tmp
+        if head:
+            run.next = head
+            run = run.next
         run.next = None
         return res
