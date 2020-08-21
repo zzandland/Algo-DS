@@ -1,3 +1,11 @@
 class Solution:
     def sortArrayByParity(self, A: List[int]) -> List[int]:
-        return sorted(A, key=lambda x: 0 if x % 2 == 0 else 1)
+        odd = sum([1 for v in A if v & 1 == 0])
+        i = 0
+        while i < odd and odd < len(A):
+            if A[i] & 1 == 0:
+                i += 1
+            else:
+                A[odd], A[i] = A[i], A[odd]
+                odd += 1
+        return A
