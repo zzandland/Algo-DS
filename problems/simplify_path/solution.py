@@ -1,12 +1,9 @@
-from collections import deque
-
 class Solution:
     def simplifyPath(self, path: str) -> str:
-        if not path: return ''
-        res = []
-        for p in path.split('/'):
-            if p and p != '.':
-                if p == '..': 
-                    if res: res.pop()
-                else: res.append(p)    
-        return '/' + '/'.join(res)            
+        commands = list(filter(bool, path.split('/')))
+        st = []
+        for c in commands:
+            if c == '..':
+                if st: st.pop()
+            elif c != '.': st.append(c)
+        return '/' + '/'.join(st)
