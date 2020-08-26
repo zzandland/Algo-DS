@@ -1,17 +1,16 @@
-from collections import deque
-
 class Solution:
     def intervalIntersection(self, A: List[List[int]], B: List[List[int]]) -> List[List[int]]:
-        if not A or not B: return []
-        A, B, res = deque(A), deque(B), []
-        while A and B:
-            a = True if A[0][1] > B[0][1] else False
-            if a:
-                if A[0][0] <= B[0][1]:
-                    res.append([max(A[0][0], B[0][0]), min(A[0][1], B[0][1])])
-                B.popleft()
+        a = b = 0
+        res = []
+        while a < len(A) and b < len(B):
+            au, av = A[a]
+            bu, bv = B[b]
+            if av < bu: a += 1
+            elif bv < au: b += 1
+            elif av < bv:
+                res.append([max(au, bu), min(av, bv)])
+                a += 1
             else:
-                if B[0][0] <= A[0][1]:
-                    res.append([max(A[0][0], B[0][0]), min(A[0][1], B[0][1])])
-                A.popleft()
-        return res    
+                res.append([max(au, bu), min(av, bv)])
+                b += 1
+        return res
