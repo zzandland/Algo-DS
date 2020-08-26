@@ -7,4 +7,4 @@
 class Solution:
     def closestValue(self, root: TreeNode, target: float) -> int:
         if not root: return float('inf')
-        return min(root.val, self.closestValue(root.left, target), self.closestValue(root.right, target), key=lambda n: abs(n - target))
+        return min(root.val, self.closestValue(root.left, target), self.closestValue(root.right, target), key=lambda x: abs(target - x))
