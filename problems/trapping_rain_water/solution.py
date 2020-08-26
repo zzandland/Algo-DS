@@ -1,24 +1,19 @@
 class Solution:
     def trap(self, height: List[int]) -> int:
-        N = len(height)
-        st, left, right = [], [-1]*N, [-1]*N
+        left = list(range(len(height)))
+        right = left[:]
+        st = []
         for i, h in enumerate(height):
-            while st and st[-1][1] < h:
+            while st and st[-1][1] <= h:
                 right[st.pop()[0]] = i
-            if st:
-                left[i] = st[-1][0]
+            if st: left[i] = st[-1][0]
             st.append((i, h))
-        i = res = 0
-        while i < N:
-            if left[i] != -1 and right[i] != -1:
-                hl, r = height[left[i]], right[i]
-                while hl >= height[r] and right[r] != -1:
-                    r = right[r]
-                h = min(hl, height[r])
-                for j in range(i, r):
-                    res += h-height[j]
-                i = r
+        i = 0
+        res = 0
+        while i < len(height):
+            while height[left[i]] > height[right[i]] and right[i] != right[right[i]]: right[i] = right[right[i]]
             else:
-                i += 1        
-        return res        
-            
+                for j in range(i, right[i]):                
+                    res += min(height[left[i]], height[right[i]]) - height[j]
+                i = right[i] + 1
+        return res
