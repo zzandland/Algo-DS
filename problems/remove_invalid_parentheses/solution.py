@@ -1,15 +1,31 @@
 class Solution:
     def removeInvalidParentheses(self, s: str) -> List[str]:
-        res, S, mx, dic = set(), len(s), 0, {'(': 1, ')': -1}
-        def dfs(i: int, c: int, ss: str) -> None:
-            nonlocal res, mx, dic
-            if c < 0: return
-            if i == S:
-                if c == 0:
-                    if len(ss) > mx: res, mx = set(), max(mx, len(ss))
-                    if len(ss) == mx: res.add(ss)    
+        res = set()
+        ln = 0
+        def dfs(i: int, cnt: int, tmp: List[str]) -> None:
+            nonlocal res, ln
+            if cnt < 0: return
+            if i == len(s):
+                if cnt != 0: return
+                if len(tmp) > ln:
+                    res = set()
+                    ln = len(tmp)
+                if len(tmp) == ln:
+                    res.add(''.join(tmp))
                 return
-            if s[i] not in ('(', ')'): return dfs(i+1, c, ss+s[i])
-            dfs(i+1, c+dic[s[i]], ss+s[i]), dfs(i+1, c, ss)
-        dfs(0, 0, '')    
+            if s[i] == '(':
+                tmp.append('(')
+                dfs(i+1, cnt+1, tmp)
+                tmp.pop()
+                dfs(i+1, cnt, tmp)
+            elif s[i] == ')':
+                tmp.append(')')
+                dfs(i+1, cnt-1, tmp)
+                tmp.pop()
+                dfs(i+1, cnt, tmp)
+            else:
+                tmp.append(s[i])
+                dfs(i+1, cnt, tmp)
+                tmp.pop()
+        dfs(0, 0, [])
         return res
