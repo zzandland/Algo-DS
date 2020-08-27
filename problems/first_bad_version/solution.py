@@ -9,10 +9,12 @@ class Solution:
         :type n: int
         :rtype: int
         """
-        l, r = 1, n
+        l, r = 0, n
         while l < r:
             m = l + (r-l)//2
-            if not isBadVersion(m) and isBadVersion(m+1): return m+1
-            if not isBadVersion(m): l = m+1
+            tmp = isBadVersion(m)
+            if not tmp:
+                if isBadVersion(m+1): return m+1
+                l = m+1
             else: r = m
-        return l
+        return l+1
