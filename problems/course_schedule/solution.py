@@ -1,20 +1,18 @@
-from collections import defaultdict
+from collections import defaultdict, deque
 
 class Solution:
     def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
-        graph, visited = defaultdict(list), set()
-        for b, a in prerequisites:
-            graph[a].append(b)
-        def fn(n: int) -> bool:
-            if n in loop: return False
-            loop.add(n)
-            for nxt in graph[n]:
-                if nxt not in visited:
-                    if not fn(nxt): return False
-                    loop.remove(nxt)
-            visited.add(n)
-            return True    
-        for i in range(numCourses):
-            loop = set()
-            if i not in visited and not fn(i): return False
-        return True
+        indegree = [0]*numCourses
+        adj = defaultdict(list)
+        for v, u in prerequisites:
+            adj[u].append(v)
+            indegree[v] += 1
+        q = deque([i for i, n in enumerate(indegree) if n == 0])
+        visited = 0
+        while q:
+            n = q.popleft()
+            visited += 1
+            for nn in adj[n]:
+                indegree[nn] -= 1
+                if indegree[nn] == 0: q.append(nn)
+        return visited == numCourses
