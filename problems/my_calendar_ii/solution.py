@@ -1,20 +1,20 @@
-(10, 1), (20, -1), (50,)
+from collections import Counter
 
 class MyCalendarTwo:
 
     def __init__(self):
-        self.changes = []
-        
+        self.delta = Counter()
+
     def book(self, start: int, end: int) -> bool:
-        tmp = self.changes[:]
-        tmp.append((start, 1))
-        tmp.append((end, -1))
-        tmp.sort()
+        self.delta[start] += 1
+        self.delta[end] -= 1
         curr = 0
-        for time, change in tmp:
-            curr += change
-            if curr > 2: return False
-        self.changes = tmp
+        for time in sorted(self.delta.keys()):
+            curr += self.delta[time]
+            if curr > 2:
+                self.delta[start] -= 1
+                self.delta[end] += 1
+                return False
         return True
 
 # Your MyCalendarTwo object will be instantiated and called as such:
