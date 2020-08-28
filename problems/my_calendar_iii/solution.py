@@ -1,17 +1,19 @@
+import bisect
+
 class MyCalendarThree:
 
     def __init__(self):
-        self.changes = []
+        self.delta = []
 
     def book(self, start: int, end: int) -> int:
-        self.changes.append((start, 1))
-        self.changes.append((end, -1))
-        self.changes.sort()
-        curr = res = 0
-        for time, change in self.changes:
+        bisect.insort_left(self.delta, (start, 1))
+        bisect.insort_left(self.delta, (end, -1))
+        
+        curr = mx = 0
+        for _, change in self.delta:
             curr += change
-            res = max(res, curr)
-        return res
+            mx = max(mx, curr)
+        return mx
 
 # Your MyCalendarThree object will be instantiated and called as such:
 # obj = MyCalendarThree()
