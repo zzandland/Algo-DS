@@ -36,28 +36,29 @@ class Solution:
         :type robot: Robot
         :rtype: None
         """
-        d = 0
-        seen = set()
-        dic = {0: (-1, 0), 1: (0, 1), 2: (1, 0), 3: (0, -1)}
-        def turn(t: int):
-            nonlocal d
-            if d - t == 1 or d == 0 and t == 3:
-                robot.turnLeft()
-            elif d - t == -1 or d == 3 and t == 0:
+        def rotate(d: int, t: int) -> int:
+            while d != t:
                 robot.turnRight()
-            elif abs(d - t) == 2:
-                robot.turnRight()
-                robot.turnRight()
-            d = t
-        def dfs(y: int, x: int, p: int):
+                d = (d+1) % 4
+            return t
+
+        dir_ = ((-1, 0), (0, 1), (1, 0), (0, -1))
+        def dfs(y: int, x: int, d: int, seen: set) -> int:
+            if (y, x) in seen:
+                d = rotate(d, (d+2) % 4)
+                robot.move()
+                return d
             robot.clean()
-            for dd in dic:
-                turn(dd)
-                ny, nx = y+dic[dd][0], x+dic[dd][1]
-                if (ny, nx) not in seen and robot.move():
-                    seen.add((ny, nx))
-                    dfs(y+dic[dd][0], x+dic[dd][1], dd)
-            turn((p+2) % 4)
+            seen.add((y, x))
+            a = d
+            for i in range(4):
+                a = rotate(a, i)
+                if not robot.move(): continue
+                ny, nx = y + dir_[i][0], x + dir_[i][1]
+                a = dfs(ny, nx, a, seen)
+                
+            a = rotate(a, (d+2) % 4)
             robot.move()
-        seen.add((0, 0))
-        dfs(0, 0, 0)
+            return a
+        
+        dfs(0, 0, 0, set())
