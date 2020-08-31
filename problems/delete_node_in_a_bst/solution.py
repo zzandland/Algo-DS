@@ -7,16 +7,14 @@
 class Solution:
     def deleteNode(self, root: TreeNode, key: int) -> TreeNode:
         if not root: return None
-        if root.val != key:
-            if root.val > key: root.left = self.deleteNode(root.left, key)
-            else: root.right = self.deleteNode(root.right, key)
-        else:
-            if root.left and root.right:
-                tmp = root.right
-                while tmp.left:
-                    tmp = tmp.left
-                root.val = tmp.val
-                root.right = self.deleteNode(root.right, tmp.val)
-            elif not root.left: return root.right
-            else: return root.left
+        if root.val == key:
+            if not root.right: return root.left
+            if not root.left: return root.right
+            else:
+                right = root.right
+                while right.left: right = right.left
+                root.val = right.val
+                root.right = self.deleteNode(root.right, root.val)
+        elif root.val > key: root.left = self.deleteNode(root.left, key)
+        else: root.right = self.deleteNode(root.right, key)
         return root
