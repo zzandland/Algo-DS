@@ -1,19 +1,18 @@
 # The read4 API is already defined for you.
-# def read4(buf: List[str]) -> int:
+# def read4(buf4: List[str]) -> int:
 
 class Solution:
     def __init__(self):
-        self.l = self.r = 0
         self.buf = ['']*4
+        self.i = self.j = 0
     
     def read(self, buf: List[str], n: int) -> int:
         if n == 0: return 0
         for i in range(n):
-            if self.l >= self.r:
-                self.buf = ['']*4
-                self.r = read4(self.buf)
-                if self.r == 0: return i
-                self.l = 0
-            buf[i] = self.buf[self.l]    
-            self.l += 1
-        return i+1
+            if self.i == self.j:
+                self.j, self.i = read4(self.buf), 0
+                if self.j == 0: return i
+            buf[i] = self.buf[self.i]
+            i += 1
+            self.i += 1
+        return i
