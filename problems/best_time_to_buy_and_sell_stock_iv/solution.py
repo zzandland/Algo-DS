@@ -1,16 +1,24 @@
 class Solution:
     def maxProfit(self, k: int, prices: List[int]) -> int:
-        if not prices: return 0
+        if len(prices) < 2: return 0
+        
         N = len(prices)
-        if k >= N//2:
+        
+        if N//2 < k: 
             res = 0
-            for prev, nxt in zip(prices, prices[1:]):
-                if nxt > prev: res += nxt - prev
+            for a, b in zip(prices, prices[1:]):
+                res += max(0, b - a)
             return res
-        dp = [[0]*(N+1) for _ in range(k+1)]
-        for r in range(1, k+1):
+        
+        dp = [[0]*N for _ in range(k+1)]
+        
+        # 6 1 6 4 3 0 2
+        # 0 0 5 5 5 5 
+        
+        for i in range(1, k+1):
+            dp[i][1] = max(0, prices[1] - prices[0])
             mx = -prices[0]
-            for i in range(2, N+1):
-                mx = max(mx, dp[r-1][i-2] - prices[i-2])
-                dp[r][i] = max(dp[r][i-1], mx + prices[i-1])
+            for j in range(2, N):
+                mx = max(mx, dp[i-1][j-2] - prices[j-1])
+                dp[i][j] = max(dp[i][j-1], prices[j] + mx)
         return dp[-1][-1]
