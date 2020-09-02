@@ -1,12 +1,20 @@
 class Solution:
     def maxProfit(self, prices: List[int]) -> int:
-        t1_cost = t2_cost = float('inf')
-        t1_profit = t2_profit = 0
+        N = len(prices)
         
-        for p in prices:
-            t1_cost = min(t1_cost, p)
-            t1_profit = max(t1_profit, p - t1_cost)
-            t2_cost = min(t2_cost, p - t1_profit)
-            t2_profit = max(t2_profit, p - t2_cost)
+        mn = float('inf')
+        run = 0
+        left = [0]*N
+        for i, p in enumerate(prices):
+            mn = min(mn, p)
+            run = max(run, p - mn)
+            left[i] = run
             
-        return t2_profit
+        mx = run = 0    
+        right = [0]*N
+        for i in range(N-1, -1, -1):
+            mx = max(mx, prices[i])
+            run = max(run, mx - prices[i])
+            right[i] = run
+            
+        return max(a + b for a, b in zip(left, right))
