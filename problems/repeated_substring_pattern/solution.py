@@ -1,10 +1,14 @@
 class Solution:
     def repeatedSubstringPattern(self, s: str) -> bool:
+        if len(s) < 2: return False
         N = len(s)
-        for i in range(N//2, 0, -1):
+        for i in range(int(N**0.5), 0, -1):
             if N % i == 0:
-                for j in range(i, N, i):
-                    if s[j:j+i] != s[j-i:j]: break
-                else:
-                    return True
+                tmp = [i]
+                if i != 1: tmp.append(N//i)
+                for l in tmp:
+                    t = hash(s[:l])
+                    for j in range(l, N, l):
+                        if t != hash(s[j:j+l]): break
+                    else: return True
         return False
