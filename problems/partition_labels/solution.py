@@ -1,12 +1,10 @@
 class Solution:
     def partitionLabels(self, S: str) -> List[int]:
-        idx = {}
-        for i, c in enumerate(S): idx[c] = i
-            
+        idx = {s: i for i, s in enumerate(S)}
         l = r = 0
         res = []
-        for i, c in enumerate(S):
-            r = max(r, idx[c])
+        for i in range(len(S)):
+            r = max(r, idx[S[i]])
             if i == r:
                 res.append(r-l+1)
                 l = i+1
