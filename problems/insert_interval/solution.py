@@ -1,25 +1,14 @@
 class Solution:
     def insert(self, intervals: List[List[int]], newInterval: List[int]) -> List[List[int]]:
-        if not intervals:
-            return [newInterval]
-        N = len(intervals)
-        def bs(t: int) -> int:
-            l, r = 0, N-1
-            while l < r:
-                m = l + (r-l)//2
-                if intervals[m][1] <= t < intervals[m+1][0]:
-                    return m
-                if t > intervals[m][1]:
-                    l = m + 1
-                else:
-                    r = m
-            return l
-        a, b = bs(newInterval[0]), bs(newInterval[1])
-        if a == b == 0 and newInterval[1] < intervals[0][0]:
-            return [newInterval] + intervals
-        if a == b == N-1 and newInterval[0] > intervals[-1][1]:
-            return intervals + [newInterval]
-        if newInterval[0] > intervals[a][1]:
-            a += 1
-        merge = [min(intervals[a][0], newInterval[0]), max(intervals[b][1], newInterval[1])]
-        return intervals[:a] + [merge] + intervals[b+1:]
+        tmp = [(newInterval[0], 1), (newInterval[1], -1)]
+        for s, e in intervals:
+            tmp.append((s, 1))
+            tmp.append((e, -1))
+        tmp.sort(key=lambda x: (x[0], -x[1]))
+        res = []
+        cur = 0
+        for t, c in tmp:
+            cur += c
+            if c == 1 and cur == 1: s = t
+            if cur == 0: res.append([s, t])
+        return res
