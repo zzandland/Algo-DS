@@ -12,12 +12,7 @@ class Solution:
     def inorderSuccessor(self, node: 'Node') -> 'Node':
         if node.right:
             right = node.right
-            while right.left:
-                right = right.left
+            while right.left: right = right.left
             return right
-        else:
-            pr = node.parent
-            while pr and pr.right == node:
-                node, pr = pr, pr.parent
-            return pr
-        return None
+        while node.parent and node.parent.right == node: node = node.parent
+        return node.parent
