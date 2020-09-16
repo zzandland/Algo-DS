@@ -1,22 +1,13 @@
 class Solution:
-    def myAtoi(self, str: str) -> int:
-        INT_MAX = (2 << 30) - 1
-        INT_MIN = ~INT_MAX
-        str = str.strip()
-        if not str: return 0
-        minus = False
-        if str[0] == '-':
-            minus = True
-            str = str[1:]
-        elif str[0] == '+':
-            minus = False
-            str = str[1:]
-        res = 0
-        for c in str:
-            if not c.isdigit(): break
-            res += int(c)
-            res *= 10
-        res //= 10
-        if not minus: return min(INT_MAX, res)
-        res *= -1
-        return max(INT_MIN, res)
+    def myAtoi(self, s: str) -> int:
+        s = s.strip()
+        if not s: return 0
+        if not s[0].isdigit() and s[0] not in ('+', '-'): return 0
+        res = []
+        for c in s:
+            if res and not c.isdigit(): break
+            res.append(c)
+        if len(res) == 1 and res[0] in ('+', '-'): return 0
+        res = int(''.join(res))
+        if res > 0: return min(2**31-1, res)
+        return max(-2**31, res)
