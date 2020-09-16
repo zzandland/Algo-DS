@@ -1,15 +1,20 @@
 class Solution:
     def divide(self, dividend: int, divisor: int) -> int:
-        pos = True
-        if dividend == (-1<<31) and divisor == -1: return (1<<31) - 1
-        if dividend < 0 or divisor < 0: pos = False
-        if dividend < 0 and divisor < 0: pos = True
-        a, b, i = abs(dividend), abs(divisor), 0
-        while a >= b:
-            t, n = b, 1
-            while t<<1 <= a:
-                t <<= 1
-                n <<= 1
-            a -= t
-            i += n
-        return i * (1 if pos else -1)
+        dp = [(1, 0)]
+        exp = 1
+        sign = not ((dividend > 0) ^ (divisor > 0))
+        dividend, divisor = abs(dividend), abs(divisor)
+        if dividend < divisor: return 0
+        while divisor <= dividend:
+            if divisor == dividend: return min((1 << 31) - 1, exp) if sign else (~exp) + 1
+            dp.append((divisor, exp))
+            divisor <<= 1
+            exp <<= 1
+        res = 0
+        idx = len(dp)
+        while dividend > 0:
+            idx = bisect.bisect_left(dp, (dividend+1,), 0, idx) - 1
+            if dividend < dp[idx][0]: break
+            res += dp[idx][1]
+            dividend -= dp[idx][0]
+        return res if sign else (~res) + 1
