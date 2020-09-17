@@ -1,25 +1,31 @@
+from collections import deque
+
 class Solution:
     def solve(self, board: List[List[str]]) -> None:
         """
         Do not return anything, modify board in-place instead.
         """
-        if not board:
-            return
-        R, C = len(board), len(board[0])
-        seen = [[False]*C for _ in range(R)]
-        dir_ = ((1, 0), (-1, 0), (0, 1), (0, -1))
-        def dfs(y: int, x: int, tick: bool) -> None:
-            if seen[y][x]:
-                return
-            seen[y][x] = True
-            if tick:
-                board[y][x] = 'X'
-            for ny, nx in [[y+r, x+c] for r, c in dir_]:
-                if 0 <= ny < R and 0 <= nx < C and board[ny][nx] == 'O':
-                    dfs(ny, nx, tick)
-        for y, x in [(y, x) for x in (0, C-1) for y in range(R)] + [(y, x) for y in (0, R-1) for x in range(C)]:
-            if board[y][x] == 'O':
-                dfs(y, x, False)
-        for y, x in [(y, x) for y in range(1, R-1) for x in range(1, C-1)]:
-            if board[y][x] == 'O':
-                dfs(y, x, True)
+        if not board: return
+        N, M = len(board), len(board[0])
+        dir_ = (-1, 0, 1, 0, -1)
+        
+        oseen = set()
+        for y in range(N):
+            for x in range(M):
+                if board[y][x] == 'O' and (y, x) not in oseen: 
+                    seen = {(y, x)}
+                    q = deque([(y, x)])
+                    capture = True
+                    while q:
+                        yy, xx = q.popleft()
+                        for ny, nx in ((yy+r, xx+c) for r, c in zip(dir_, dir_[1:])):
+                            if 0 <= ny < N and 0 <= nx < M:
+                                if board[ny][nx] == 'O' and (ny, nx) not in seen:
+                                    seen.add((ny, nx))
+                                    q.append((ny, nx))
+                            else:
+                                capture = False
+                    if capture:
+                        for r, c in seen:
+                            board[r][c] = 'X'
+                    oseen |= seen
