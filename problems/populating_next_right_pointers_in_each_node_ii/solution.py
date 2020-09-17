@@ -10,17 +10,12 @@ class Node:
 
 class Solution:
     def connect(self, root: 'Node') -> 'Node':
-        if not root:
-            return None
-        q = [root]
-        while q:
-            nq = []
-            for i, n in enumerate(q):
-                if i < len(q)-1:
-                    n.next = q[i+1]
-                if n.left:
-                    nq.append(n.left)
-                if n.right:
-                    nq.append(n.right)
-            q = nq
+        dp = {}
+        def dfs(n: Node, d: int) -> None:
+            if not n: return
+            if d in dp: dp[d].next = n
+            dp[d] = n
+            dfs(n.left, d+1)
+            dfs(n.right, d+1)
+        dfs(root, 0)
         return root
