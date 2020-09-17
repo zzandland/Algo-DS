@@ -1,21 +1,20 @@
-from collections import defaultdict
-
 class Solution:
     def minWindow(self, s: str, t: str) -> str:
-        if not s or not t: return ''
-        dic, zero, ts, mn, output = defaultdict(int), set(list(t)), set(list(t)), float('inf'), ''
-        for tc in t:
-            dic[tc] += 1
-        j = 0
-        for i, sc in enumerate(s):
-            dic[sc] -= 1
-            if dic[sc] == 0 and sc in zero: zero.remove(sc)
-            while not zero:
-                if i-j+1 < mn:
-                    mn = i-j+1
-                    output = s[j:i+1]
-                dic[s[j]] += 1
-                if s[j] in ts and dic[s[j]] > 0:
-                    zero.add(s[j])
-                j+=1    
-        return output            
+        T = Counter(t)
+        S = Counter()
+        def comp() -> bool:
+            for c in T:
+                if c not in S or S[c] < T[c]: return False
+            return True
+        l = 0
+        res = s + 'A'
+        for r, rc in enumerate(s):
+            S[rc] += 1
+            while comp():
+                res = min(res, s[l:r+1], key=len)
+                lc = s[l]
+                S[lc] -= 1
+                if not S[lc]: del S[lc]
+                l += 1
+                
+        return res if res != s + 'A' else ''
