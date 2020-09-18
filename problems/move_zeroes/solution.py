@@ -3,4 +3,12 @@ class Solution:
         """
         Do not return anything, modify nums in-place instead.
         """
-        nums.sort(key=lambda x: 1 if x == 0 else 0)
+        zero = n = 0
+        N = len(nums)
+        while zero < N:
+            while zero < N and nums[zero] != 0: zero += 1
+            if zero == N: return
+            n = zero
+            while n < N and nums[n] == 0: n += 1
+            if n == N: return 
+            nums[zero], nums[n] = nums[n], nums[zero]
