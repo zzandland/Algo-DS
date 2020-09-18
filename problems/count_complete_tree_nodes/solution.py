@@ -7,28 +7,32 @@
 class Solution:
     def countNodes(self, root: TreeNode) -> int:
         if not root: return 0
-        H, n = 0, root
-        while n.left:
-            n = n.left
-            H += 1
-        N = 2**H
-        def exist(n: TreeNode, l: int, r: int, t: int) -> bool:
-            h = 0
-            while h < H:
-                m = l + (r-l)//2
-                h += 1
-                if t < m:
-                    r = m
-                    n = n.left
+        # get lowest level
+        lv = 0
+        run = root
+        while run.left:
+            lv += 1
+            run = run.left
+        l, r = 0, (1 << lv) - 1
+        def check(m: int) -> bool:
+            run = root
+            a, b = 0, (1 << lv) - 1
+            while a < b:
+                c = a + (b-a)//2
+                if c >= m:
+                    run = run.left
+                    b = c
                 else:
-                    l = m+1
-                    n = n.right
-            return n
-        L, R = 0, N
-        while L < R:
-            M = L + (R-L)//2
-            if exist(root, 0, N, M):
-                L = M+1
-            else:
-                R = M
-        return 2**H - 1 + L
+                    run = run.right
+                    a = c+1
+            return run
+                    
+        while l < r:
+            m = l + (r-l)//2
+            if check(m): l = m+1
+            else: r = m
+        if check(l): l += 1
+        res = 0
+        for i in range(lv):
+            res += (1 << i)
+        return res + l
