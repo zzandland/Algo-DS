@@ -1,23 +1,20 @@
 class Solution:
     def wordBreak(self, s: str, wordDict: List[str]) -> List[str]:
+        st = {*s}
+        word2idx = {}
+        idx2word = {}
+        
+        for i, w in enumerate(wordDict):
+            st -= {*w}
+            word2idx[w] = i
+            idx2word[i] = w
+        if st: return []
+            
         N = len(s)
-        dic = set()
-        letters = set()
-        for word in wordDict:
-            dic.add(word)
-            letters |= set(list(word))
-        for c in s:
-            if c not in letters: return []
         dp = [[[]]] + [[] for _ in range(N)]
         for i in range(N):
-            for j in range(i, -1, -1):
-                t = s[j:i+1]
-                if t in dic: dp[i+1] += [breaks + [j] for breaks in dp[j]]
-        res = []
-        for breaks in dp[-1]:
-            tmp = []
-            breaks.append(N)
-            for l, r in zip(breaks, breaks[1:]):
-                tmp.append(s[l:r])
-            res.append(' '.join(tmp))
-        return res
+            for j in range(i+1):
+                tmp = s[j:i+1]
+                if tmp in word2idx:
+                    dp[i+1] += [nxt + [word2idx[tmp]] for nxt in dp[j]]
+        return [' '.join(map(lambda x: idx2word[x], arr)) for arr in dp[-1]]
