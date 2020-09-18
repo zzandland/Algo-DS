@@ -3,19 +3,19 @@ from collections import OrderedDict
 class LRUCache:
 
     def __init__(self, capacity: int):
-        self.dic = OrderedDict()
-        self.cap = capacity
+        self.q = OrderedDict()
+        self.c = capacity
 
     def get(self, key: int) -> int:
-        if key not in self.dic: return -1
-        val = self.dic.pop(key)
-        self.dic[key] = val
+        if key not in self.q: return -1
+        val = self.q.pop(key)
+        self.q[key] = val
         return val
 
     def put(self, key: int, value: int) -> None:
-        if key in self.dic: self.dic.pop(key)
-        self.dic[key] = value
-        if len(self.dic) > self.cap: self.dic.popitem(last=False)
+        if key in self.q: self.q.pop(key)
+        self.q[key] = value
+        if len(self.q) > self.c: self.q.popitem(last=False)
 
 # Your LRUCache object will be instantiated and called as such:
 # obj = LRUCache(capacity)
