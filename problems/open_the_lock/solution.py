@@ -1,20 +1,23 @@
-from collections import deque
-
 class Solution:
     def openLock(self, deadends: List[str], target: str) -> int:
-        q, dead, seen, tries = deque(['0000']), set(deadends), set(), 0
-        if '0000' in dead:
-            return -1
-        r = [['9','1'],['0','2'],['1','3'],['2','4'],['3','5'],['4','6'],['5','7'],['6','8'],['7','9'],['8','0']]
+        ds = {*deadends}
+        if '0000' in ds: return -1
+        ds.add('0000')
+        q = {'0000'}
+        res = 0
         while q:
-            l = len(q)
-            tries += 1
-            for _ in range(l):
-                n = q.popleft()
-                for nn in [n[:i]+nd+n[i+1:] for i in range(4) for nd in r[int(n[i])]]:
-                    if nn == target:
-                        return tries
-                    if nn not in seen and nn not in dead:
-                        q.append(nn)
-                        seen.add(nn)
+            nq = set()
+            if target in q: return res
+            res += 1
+            for s in q:
+                for i in range(4):
+                    l = s[:i] + str((int(s[i]) + 9) % 10) + s[i+1:]
+                    if l not in ds:
+                        ds.add(l)
+                        nq.add(l)
+                    r = s[:i] + str((int(s[i]) + 1) % 10) + s[i+1:]
+                    if r not in ds:
+                        ds.add(r)
+                        nq.add(r)
+            q = nq
         return -1
