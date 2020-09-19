@@ -1,4 +1,4 @@
-import random
+from collections import defaultdict
 
 class RandomizedCollection:
 
@@ -7,32 +7,29 @@ class RandomizedCollection:
         Initialize your data structure here.
         """
         self.lst = []
-        self.mp = {}
+        self.idx = defaultdict(set)
 
     def insert(self, val: int) -> bool:
         """
         Inserts a value to the collection. Returns true if the collection did not already contain the specified element.
         """
+        res = bool(self.idx[val])
         self.lst.append(val)
-        if val not in self.mp:
-            uniq = True
-            self.mp[val] = set()
-        else: uniq = False    
-        self.mp[val].add(len(self.lst)-1)
-        return uniq
+        self.idx[val].add(len(self.lst) - 1)
+        return not res
 
     def remove(self, val: int) -> bool:
         """
         Removes a value from the collection. Returns true if the collection contained the specified element.
         """
-        if val not in self.mp: return False
-        i = self.mp[val].pop()
-        if not self.mp[val]: del self.mp[val]
-        if i != len(self.lst)-1:
-            self.lst[i], self.lst[-1] = self.lst[-1], self.lst[i]
-            swap = self.lst[i]
-            self.mp[swap].remove(len(self.lst)-1)
-            self.mp[swap].add(i)
+        if not self.idx[val]: return False
+        i = next(iter(self.idx[val]))
+        self.idx[val].remove(i)
+        if i != len(self.lst) - 1:
+            last = self.lst[-1]
+            self.idx[last].remove(len(self.lst) - 1)
+            self.idx[last].add(i)
+            self.lst[i] = last
         self.lst.pop()
         return True
 
@@ -41,6 +38,7 @@ class RandomizedCollection:
         Get a random element from the collection.
         """
         return random.choice(self.lst)
+
 
 # Your RandomizedCollection object will be instantiated and called as such:
 # obj = RandomizedCollection()
