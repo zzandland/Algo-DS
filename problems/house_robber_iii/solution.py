@@ -6,15 +6,12 @@
 #         self.right = right
 class Solution:
     def rob(self, root: TreeNode) -> int:
-        dp = {}
+        @functools.lru_cache(None)
         def dfs(n: TreeNode, visited: bool) -> int:
             if not n: return 0
-            if (n, visited) not in dp:
-                if visited: dp[n, visited] = dfs(n.left, False) + dfs(n.right, False)
-                else:
-                    dp[n, visited] = max(
-                        n.val + dfs(n.left, True) + dfs(n.right, True),
-                        dfs(n.left, False) + dfs(n.right, False)
-                    )
-            return dp[n, visited]
+            if visited: return dfs(n.left, False) + dfs(n.right, False)
+            return max(
+                n.val + dfs(n.left, True) + dfs(n.right, True),
+                dfs(n.left, False) + dfs(n.right, False)
+            )
         return dfs(root, False)
