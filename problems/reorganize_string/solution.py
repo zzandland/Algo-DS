@@ -1,22 +1,22 @@
 from collections import Counter
-from heapq import heappush, heappop, heapify
+from heapq import heapify, heappush, heappop
 
 class Solution:
     def reorganizeString(self, S: str) -> str:
-        c = Counter(S)
-        # make max heap
-        q = [(-cnt, n) for n, cnt in c.items()]
-        heapify(q)
+        freq = Counter(S)
+        q = [(-cnt, c) for c, cnt in freq.items()]
         st = []
+        heapify(q)
         res = []
         while q:
-            while st and res[-1] != st[-1]:
-                res.append(st.pop())
-            cnt, n = heappop(q)
-            if cnt < -1: heappush(q, (cnt+1, n))
-            if not res or res[-1] != n: res.append(n)
-            else: st.append(n)
-        
-        while st and res[-1] != st[-1]:
-            res.append(st.pop())
-        return ''.join(res) if not st else ''
+            if st and res[-1] != st[-1][1]: cnt, c = st.pop()
+            else: cnt, c = heappop(q)
+            res.append(c)
+            if cnt < -1:
+                if not st: st.append((cnt+1, c))
+                else: heappush(q, (cnt+1, c))
+        if st:
+            cnt, c = st.pop()
+            if cnt < -1: return ''
+            else: res.append(c)
+        return ''.join(res)
