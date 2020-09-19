@@ -4,10 +4,10 @@
 #         self.val = x
 #         self.left = None
 #         self.right = None
-
 from collections import deque
 
 class Codec:
+
     def serialize(self, root):
         """Encodes a tree to a single string.
         
@@ -15,20 +15,16 @@ class Codec:
         :rtype: str
         """
         if not root: return ''
-        output, q = [str(root.val)], deque([root])
+        q = deque([root])
+        output = []
         while q:
             n = q.popleft()
-            if n.left:
-                output.append(str(n.left.val))
+            if n:
+                output.append(str(n.val))
                 q.append(n.left)
-            else:
-                output.append('null')
-            if n.right:    
-                output.append(str(n.right.val))
                 q.append(n.right)
             else:
-                output.append('null')    
-        while output[-1] == 'null': output.pop()        
+                output.append('null')
         return ','.join(output)
 
     def deserialize(self, data):
@@ -41,21 +37,20 @@ class Codec:
         buf = deque(data.split(','))
         root = TreeNode(int(buf.popleft()))
         q = deque([root])
-        while q and buf:
+        while buf:
             n = q.popleft()
-            s = buf.popleft()
-            if s != 'null':
-                l = TreeNode(int(s))
-                n.left = l
-                q.append(l)
-            if not buf: break    
-            s = buf.popleft()
-            if s != 'null':
-                r = TreeNode(int(s))
-                n.right = r
-                q.append(r)
-        return root        
+            l, r = buf.popleft(), buf.popleft()
+            if l != 'null':
+                left = TreeNode(int(l))
+                n.left = left
+                q.append(left)
+            if r != 'null':
+                right = TreeNode(int(r))
+                n.right = right
+                q.append(right)
+        return root
 
 # Your Codec object will be instantiated and called as such:
-# codec = Codec()
-# codec.deserialize(codec.serialize(root))
+# ser = Codec()
+# deser = Codec()
+# ans = deser.deserialize(ser.serialize(root))
