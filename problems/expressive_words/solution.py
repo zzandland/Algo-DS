@@ -1,27 +1,28 @@
 class Solution:
     def expressiveWords(self, S: str, words: List[str]) -> int:
-        def gen(s: str):
+        def convert(s: str) -> [(str, int)]:
+            if not s: return []
+            cnt = 1
+            c = s[0]
             res = []
-            let, cnt = S[0], 1
             for i in range(1, len(s)):
-                c = s[i]
-                if c != let:
-                    res.append((let, cnt))
-                    let, cnt = c, 1
-                else:
+                if s[i] == c:
                     cnt += 1
-            res.append((let, cnt))
+                else:
+                    res.append((c, cnt))
+                    c, cnt = s[i], 1
+            res.append((c, cnt))
             return res
-        target = gen(S)
+        
+        t = convert(S)
         res = 0
         for w in words:
-            wd = gen(w)
-            if len(wd) == len(target):
-                for a, b in zip(target, wd):
-                    tc, tf = a
-                    wc, wf = b
-                    if tc != wc or tf < wf: break
-                    if tf == 2 and tf > wf: break
+            v = convert(w)
+            if len(t) == len(v):
+                for a, b in zip(t, v):
+                    if a[0] != b[0]: break
+                    if a[1] < b[1]: break
+                    if a[1] <= 2 and a[1] != b[1]: break
                 else:
                     res += 1
         return res
