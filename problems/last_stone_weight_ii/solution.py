@@ -1,6 +1,10 @@
 class Solution:
     def lastStoneWeightII(self, stones: List[int]) -> int:
-        dp = {0}
+        q = {0}
         for s in stones:
-            dp = {i+s for i in dp} | {i-s for i in dp}
-        return min([abs(i) for i in dp])
+            nq = set()
+            for w in q:
+                nq.add(w-s)
+                nq.add(w+s)
+            q = nq
+        return min(map(abs, q))
