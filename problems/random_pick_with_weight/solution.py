@@ -1,14 +1,14 @@
 class Solution:
 
     def __init__(self, w: List[int]):
-        self.run = 0
-        self.prefix = []
-        for v in w:
-            self.run += v
-            self.prefix.append(self.run)
+        self.pf = []
+        run = 0
+        for n in w:
+            run += n
+            self.pf.append(run)
 
     def pickIndex(self) -> int:
-        return bisect.bisect_left(self.prefix, random.randint(1, self.run))
+        return bisect.bisect_left(self.pf, random.randint(1, self.pf[-1]))
 
 # Your Solution object will be instantiated and called as such:
 # obj = Solution(w)
