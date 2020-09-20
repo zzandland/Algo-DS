@@ -10,15 +10,17 @@ class StreamChecker:
             for c in w[::-1]:
                 n.setdefault(c, {})
                 n = n[c]
-            n['*'] = {}
+            n['*'] = w
 
     def query(self, letter: str) -> bool:
         self.buf.appendleft(letter)
-        run = self.root
+        n = self.root
         for c in self.buf:
-            if c not in run: return False
-            run = run[c]
-            if '*' in run: return True
+            if '*' in n: return True
+            if c not in n: return False
+            n = n[c]
+        return '*' in n
+
 
 # Your StreamChecker object will be instantiated and called as such:
 # obj = StreamChecker(words)
