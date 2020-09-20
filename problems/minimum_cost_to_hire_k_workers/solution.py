@@ -1,12 +1,11 @@
-from heapq import *
-
 class Solution:
     def mincostToHireWorkers(self, quality: List[int], wage: List[int], K: int) -> float:
-        arr = sorted([((w / q), q) for w, q in zip(wage, quality)])
-        window, tq, res = [], 0, float('inf')
-        for r, q in arr:
-            tq += q
-            heappush(window, -q)
-            if len(window) > K: tq += heappop(window)
-            if len(window) == K: res = min(res, r * tq)
+        res = float('inf')
+        hp = []
+        qsum = 0
+        for r, q in sorted((w / q, q) for w, q in zip(wage, quality)):
+            qsum += q
+            heappush(hp, -q)
+            if len(hp) > K: qsum += heappop(hp)
+            if len(hp) == K: res = min(res, r * qsum)
         return res
