@@ -1,12 +1,12 @@
 class Solution:
     def carPooling(self, trips: List[List[int]], capacity: int) -> bool:
-        changes = []
-        for p, s, e in trips:
-            changes.append((s, p))
-            changes.append((e, -p))
-        changes.sort()
-        curr = 0
-        for _, change in changes:
-            curr += change
-            if curr > capacity: return False
+        intervals = []
+        for cnt, s, e in trips:
+            intervals.append((s, cnt))
+            intervals.append((e, -cnt))
+        intervals.sort()
+        cnt = 0
+        for _, change in intervals:
+            cnt += change
+            if cnt > capacity: return False
         return True
