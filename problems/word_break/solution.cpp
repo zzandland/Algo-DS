@@ -1,23 +1,35 @@
 class Solution {
 public:
-    bool wordBreak(string s, vector<string>& wordDict) {
-        unordered_set<string> st;
-        for (string w: wordDict) st.emplace(w);
-        
-        int len = s.size();
-        
-        bool dp[len+1];
-        fill_n(dp, len+1, false);
-        dp[0] = true;
-        for (int i = 0; i < len; ++i) {
-            for (int j = i; j >= 0; --j) {
-                if (st.count(s.substr(j, i-j+1)) && dp[j]) {
-                    dp[i+1] = true;  
+    bool helper(int i, string s, unordered_set<string>& ws, unordered_map<int, int>& dp) {
+        if (i > s.length()) return 0;
+        if (i == s.length()) return 1;
+        if (!dp.count(i)) {
+            for (int j = 1; i+j <= s.length(); ++j) {
+                if (ws.count(s.substr(i, j)) && helper(i+j, s, ws, dp)) {
+                    dp[i] = 1;
                     break;
-                } 
+                }
+            }
+            if (!dp.count(i)) dp[i] = 0;
+        }
+        return dp[i];
+    }
+
+    bool wordBreak(string s, vector<string>& wordDict) {
+        unordered_set<string> ws;
+        for (string w : wordDict) ws.emplace(w);
+        const int ln = s.length();
+        bool dp[ln + 1];
+        memset(dp, 0, ln + 1);
+        dp[0] = true;
+        for (int i = 0; i <= ln; ++i) {
+            for (int j = 0; j < i; ++j) {
+                if (ws.count(s.substr(j, i-j)) && dp[j]) {
+                    dp[i] = true;
+                    break;
+                }
             }
         }
-        
-        return dp[s.size()];
+        return dp[s.length()];
     }
 };
