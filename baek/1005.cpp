@@ -44,4 +44,6 @@ int main() {
 
     cout << total[t-1] + time[t-1] << '\n';
   }
+
+  return 0;
 }
