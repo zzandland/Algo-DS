@@ -1,0 +1,61 @@
+#include <stdbool.h>
+#include "match_system.h"
+
+int main() {
+    MatchSystem* ms = make_match_system();
+    join_match(ms, "호람미어흥", silver, bottom);
+    join_match(ms, "어른작슨", stone, mid);
+    join_match(ms, "드르렁커억푸우", stone, top);
+    join_match(ms, "아리아나동그란데", stone, side);
+    join_match(ms, "김똥멍청", stone, bottom);
+    join_match(ms, "롤하지말고 싸우쟈", silver, mid);
+    join_match(ms, "팡명의 서광식", stone, bottom);
+    join_match(ms, "족보담당자", bronze, side);
+    join_match(ms, "언더아머 단속반", stone, mid);
+    join_match(ms, "타코와사비", stone, top);
+    join_match(ms, "가문의 영광굴비", stone, side);
+    join_match(ms, "바람과 함께 살빠지다", stone, bottom);
+    join_match(ms, "오드리될뻔", stone, mid);
+    join_match(ms, "농구있네축구싶냐", stone, top);
+    join_match(ms, "거져줄게잘사가", silver, mid);
+    join_match(ms, "살아줄게잘꺼져", silver, bottom);
+    join_match(ms, "일해라절해라", stone, side);
+    join_match(ms, "형돈아형돈좀", silver, bottom);
+    join_match(ms, "돈들어손내놔", silver, bottom);
+    join_match(ms, "명란젓코난", bronze, mid);
+    join_match(ms, "프로틴도둑 엄준식", bronze, mid);
+    join_match(ms, "정통노예시장", stone, mid);
+    join_match(ms, "이쑤신장군", stone, bottom);
+    join_match(ms, "전국모래자랑", stone, top);
+    join_match(ms, "짱구는 옷팔아", silver, top);
+    join_match(ms, "성시경 친구 내시경", stone, top);
+    join_match(ms, "폭행몬스터", stone, mid);
+    join_match(ms, "봉구스박보검", stone, mid);
+    join_match(ms, "오즈의맙소사", bronze, side);
+    join_match(ms, "피부암통키", stone, mid);
+    join_match(ms, "니이모를 찾아서", stone, mid);
+    join_match(ms, "하울의 음 쥑이는성", bronze, mid);
+    join_match(ms, "누가 문을 황현희", stone, bottom);
+    join_match(ms, "저는 이만 갑오개혁", stone, bottom);
+    join_match(ms, "반지하의 제왕", silver, bottom);
+    join_match(ms, "바람계곡의 나얼시카", bronze, mid);
+    join_match(ms, "발광머리앤", stone, mid);
+    join_match(ms, "베네딕트 자대배치", stone, top);
+    join_match(ms, "카드값줘 체리", stone, mid);
+    join_match(ms, "조선왕조실룩샐룩", stone, mid);
+    join_match(ms, "달의요강 세일러문", bronze, side);
+    join_match(ms, "중성마녀 아라베스크", stone, bottom);
+    join_match(ms, "주님믿고 다이브", stone, mid);
+    join_match(ms, "교회가다 걸린 스님", stone, mid);
+    join_match(ms, "태정태세이문세", bronze, mid);
+    join_match(ms, "홍어심슨", uranium, mid);
+    join_match(ms, "벼랑위의 당뇨", bronze, mid);
+    join_match(ms, "아프리카청춘이다", bronze, top);
+    join_match(ms, "차린건 많지만 조금드세요", bronze, mid);
+    join_match(ms, "내이름은 재난 얼굴이죠", gold, side);
+    join_match(ms, "모두까기인형", stone, side);
+    join_match(ms, "연쇄할인범", stone, side);
+    join_match(ms, "우리사이 고멘나사이", stone, bottom);
+    delete_match_system(ms);
+    return 0;
+}
