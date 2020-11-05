@@ -1,8 +1,6 @@
 #include <algorithm>
-#include <cstring>
 #include <iostream>
 #include <queue>
-#include <utility>
 #include <vector>
 #define P pair<int, int>
 
@@ -45,17 +43,19 @@ int kruskal(int V, int E) {
 int prim(int V, int E) {
   int a, b, c;
   long long res = 0;
-  vector<P> edges[10001];
-  int seen[10001];
+  vector<vector<P>> edges(V+1, vector<P>());
+  int seen[V+1];
+
+  for (int i = 0; i < V+1; ++i) seen[i] = 0;
 
   for (int i = 0; i < E; ++i) {
     cin >> a >> b >> c;
-    edges[a].push_back({c, b});
-    edges[b].push_back({c, a});
+    edges[a].push_back(P(c, b));
+    edges[b].push_back(P(c, a));
   }
 
   priority_queue<P, vector<P>, greater<P>> pq;
-  pq.push(P(0, 1));
+  pq.emplace(P(0, 1));
 
   while (!pq.empty()) {
     auto [w, n] = pq.top();
@@ -66,7 +66,9 @@ int prim(int V, int E) {
     res += w;
 
     for (int i = 0; i < edges[n].size(); ++i) {
-      if (!seen[edges[n][i].second]) pq.push(edges[n][i]);
+      if (!seen[edges[n][i].second]) {
+        pq.emplace(edges[n][i]);
+      }
     }
   }
   return res;
@@ -77,7 +79,7 @@ int main(int argc, char *argv[]) {
 
   cin >> V >> E;
 
-  cout << prim(V, E);
+  cout << prim(V, E) << endl;
 
   return 0;
 }
