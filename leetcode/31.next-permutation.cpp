@@ -27,6 +27,10 @@
  * 1,1,5 → 1,5,1
  *
  */
+#include <iostream>
+#include <vector>
+using namespace std;
+
 class Solution {
 public:
   void nextPermutation(vector<int> &nums) {
