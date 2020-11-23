@@ -5,13 +5,12 @@
 #         self.left = left
 #         self.right = right
 class Solution:
+    @functools.lru_cache(None)
+    def helper(self, root: TreeNode, visited: bool) -> int:
+        if not root: return 0    
+        pss = self.helper(root.left, False) + self.helper(root.right, False)
+        if visited: return pss
+        return max(pss, root.val + self.helper(root.left, True) + self.helper(root.right, True))
+
     def rob(self, root: TreeNode) -> int:
-        @functools.lru_cache(None)
-        def dfs(n: TreeNode, visited: bool) -> int:
-            if not n: return 0
-            if visited: return dfs(n.left, False) + dfs(n.right, False)
-            return max(
-                n.val + dfs(n.left, True) + dfs(n.right, True),
-                dfs(n.left, False) + dfs(n.right, False)
-            )
-        return dfs(root, False)
+        return self.helper(root, False)
