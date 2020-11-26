@@ -43,21 +43,24 @@ void heappush(Heap* hp, int val) {
   if (hp->size < hp->cap) {
     int i = hp->size++;
     hp->arr[i] =  val;
-
     while (i != 0 && hp->arr[parent(i)] < hp->arr[i]) {
       swap(hp->arr[parent(i)], hp->arr[i]);
       i = parent(i);
     }
-  } else {
-    printf("0 ");
   }
 }
 
+// if heap is empty return 0
 int heappop(Heap* hp) {
-  int res = hp->arr[0];
-  swap(hp->arr[0], hp->arr[hp->size-1]);
-  hp->size--;
-  heapify(hp, 0);
+  int res;
+  if (hp->size > 0) {
+    res = hp->arr[0];
+    swap(hp->arr[0], hp->arr[hp->size-1]);
+    hp->size--;
+    heapify(hp, 0);
+  } else {
+    res = 0;
+  }
   return res;
 }
 
