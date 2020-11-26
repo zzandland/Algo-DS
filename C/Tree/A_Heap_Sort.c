@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define swap(x, y) do { typeof(x) tmp = x; x = y; y = tmp; } while (0)
+#define swap(x, y) do { int tmp = x; x = y; y = tmp; } while (0)
 
 void heapify(int hp[], int i, int N) {
   int l = 2*i + 1;

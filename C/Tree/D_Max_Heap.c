@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define swap(x, y) do { typeof(x) tmp = x; x = y; y = tmp; } while (0)
+#define swap(x, y) do { int tmp = x; x = y; y = tmp; } while (0)
 
 typedef struct {
   int size;
@@ -12,10 +12,6 @@ typedef struct {
 } Heap;
 
 int parent(int i) { return (i-1) / 2; }
-
-int left(int i) { return 2*i + 1; }
-
-int right(int i) { return 2*i + 2; }
 
 Heap* create_heap(int cap) {
   Heap* hp = (Heap*)malloc(sizeof(Heap));
@@ -52,6 +48,8 @@ void heappush(Heap* hp, int val) {
       swap(hp->arr[parent(i)], hp->arr[i]);
       i = parent(i);
     }
+  } else {
+    printf("0 ");
   }
 }
 
@@ -73,6 +71,8 @@ int main() {
     if (tmp == 0) printf("%d ", heappop(hp));
     else heappush(hp, tmp);
   }
+
+  delete_heap(hp);
   
   return 0;
 }
