@@ -16,8 +16,8 @@ void dfs(int **grid, int y, int x, int h, int w) {
 }
 
 int** create_matrix(int h, int w) {
-  int** mt = (int**)malloc(sizeof(int) * h * w);
-  for (int i = 0; i < h; ++i) mt[i] = malloc(sizeof(int) * w);
+  int **mt = (int**)malloc(sizeof(int) * h * w);
+  for (int i = 0; i < h; ++i) mt[i] = (int*)malloc(sizeof(int) * w);
   return mt;
 }
 
