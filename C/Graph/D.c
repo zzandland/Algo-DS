@@ -1,3 +1,5 @@
+// 미로 탐색 - 최소 경로 길이 (BFS)
+
 #include <stdio.h>
 #include <stdlib.h>
 

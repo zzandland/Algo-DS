@@ -1,3 +1,5 @@
+// 섬의 개수
+
 #include <stdio.h>
 #include <stdlib.h>
 
