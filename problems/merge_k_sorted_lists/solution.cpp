@@ -1,48 +1,31 @@
-#include <queue>
-
 /**
  * Definition for singly-linked list.
  * struct ListNode {
  *     int val;
  *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
  * };
  */
-class Compare {
-public:
-  bool operator() (ListNode* a, ListNode* b) {
-    if (a == NULL) return false;
-    if (b == NULL) return true;
-    return a->val > b->val;
-  }
-};
-
 class Solution {
 public:
-  ListNode* mergeKLists(vector<ListNode*>& lists) {
-    priority_queue<ListNode*,vector<ListNode*>,Compare> min_node_heap;
-    ListNode *res, *res_head, *n, *tmp;
-    res = res_head = n = tmp = NULL;
-    for (ListNode* list : lists) {
-      if (list != NULL)
-        min_node_heap.push(list);
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        auto comp = [&](ListNode *a, ListNode *b) -> bool { return a->val > b->val; };
+        priority_queue<ListNode*, vector<ListNode*>, decltype(comp)> pq(comp);
+        
+        for (auto l : lists) if (l) pq.emplace(l);
+        ListNode *dum = new ListNode();
+        ListNode *tmp, *run = dum;
+        while (!pq.empty()) {
+            tmp = pq.top();
+            pq.pop();
+            run->next = tmp;
+            tmp = tmp->next;
+            run = run->next;
+            if (tmp) pq.emplace(tmp);
+        }
+        run->next = nullptr;
+        return dum->next;
     }
-    
-    while (!min_node_heap.empty()) {
-      n = min_node_heap.top();
-      min_node_heap.pop();
-      if (n != NULL) {
-        tmp = n;
-        n = n->next;
-        min_node_heap.push(n);
-        if (res != NULL)
-          res->next = tmp;
-        res = tmp;
-        if (res_head == NULL)
-          res_head = res;
-      }
-    }
-    
-    return res_head;
-  }
 };
