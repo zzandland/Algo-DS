@@ -1,20 +1,22 @@
 class Solution {
 public:
     vector<vector<int>> diagonalSort(vector<vector<int>>& mat) {
-        int M = mat.size(), N = mat[0].size();
-        vector<pair<int, int>> arr;
-        for (int y = M-1; y >= 0; --y) arr.push_back({y, 0});
-        for (int x = 0; x < N; ++x) arr.push_back({0, x});
+        if (!mat.size() || !mat[0].size()) return mat;
+        int R = mat.size(), C = mat[0].size();
         
-        for (auto [r, c]: arr) {
-            int y = r, x = c;
-            vector<int> tmp;
-            while (y < M && x < N) tmp.push_back(mat[y++][x++]);
+        vector<int> tmp;
+        for (int x = C-1; x >= 0; --x) {
+            tmp.clear();
+            for (int y = 0; y < R && y+x < C; ++y) tmp.push_back(mat[y][y+x]);
             sort(tmp.begin(), tmp.end());
-            y = r, x = c;
-            for (int val: tmp) {
-                mat[y++][x++] = val;
-            }
+            for (int y = 0, i = 0; y < R && y+x < C; ++y, ++i) mat[y][y+x] = tmp[i];
+        }
+        
+        for (int y = 1; y < R; ++y) {
+            tmp.clear();
+            for (int x = 0; x < C && y+x < R; ++x) tmp.push_back(mat[y+x][x]);
+            sort(tmp.begin(), tmp.end());
+            for (int x = 0, i = 0; x < C && y+x < R; ++x, ++i) mat[y+x][x] = tmp[i];
         }
         return mat;
     }
