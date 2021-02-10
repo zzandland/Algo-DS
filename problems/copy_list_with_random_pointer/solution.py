@@ -9,16 +9,12 @@ class Node:
 
 class Solution:
     def copyRandomList(self, head: 'Node') -> 'Node':
-        dic = {None: None}
+        dic = defaultdict(lambda: Node(0))
+        dic[None] = None
         run = head
         while run:
-            dic[run] = Node(run.val)
-            run = run.next
-            
-        run = head
-        while run:
+            dic[run].val = run.val
             dic[run].next = dic[run.next]
             dic[run].random = dic[run.random]
             run = run.next
-            
         return dic[head]
