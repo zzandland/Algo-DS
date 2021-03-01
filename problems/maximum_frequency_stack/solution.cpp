@@ -1,22 +1,37 @@
+struct Node {
+    int n, f, t;
+    
+    Node(int n, int f, int t): n(n), f(f), t(t) {}
+};
+
+class Compare {
+public:
+    bool operator() (const Node *a, const Node *b) {
+        if (a->f == b->f) return a->t < b->t;
+        return a->f < b->f;
+    }    
+};
+
+
 class FreqStack {
 public:
-    unordered_map<int, stack<int>> m;
-    unordered_map<int, int> freqs;
-    int mx;
+    priority_queue<Node*, vector<Node*>, Compare> pq;
+    unordered_map<int, int> dic;
+    int t;
     
-    FreqStack(): mx(0) {}
+    FreqStack(): t(0) {}
     
     void push(int x) {
-        mx = max(mx, ++freqs[x]);
-        m[freqs[x]].emplace(x);
+        dic[x]++;
+        Node *tmp = new Node(x, dic[x], t++);
+        pq.push(tmp);
     }
     
     int pop() {
-        int x = m[mx].top();
-        m[mx].pop();
-        if (!m[mx].size()) mx -= 1;
-        --freqs[x];
-        return x;
+        Node *tmp = pq.top();
+        pq.pop();
+        dic[tmp->n]--;
+        return tmp->n;
     }
 };
 
