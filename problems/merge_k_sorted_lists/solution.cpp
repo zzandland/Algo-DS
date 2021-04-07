@@ -11,21 +11,21 @@
 class Solution {
 public:
     ListNode* mergeKLists(vector<ListNode*>& lists) {
-        auto comp = [&](ListNode *a, ListNode *b) -> bool { return a->val > b->val; };
-        priority_queue<ListNode*, vector<ListNode*>, decltype(comp)> pq(comp);
-        
-        for (auto l : lists) if (l) pq.emplace(l);
-        ListNode *dum = new ListNode();
-        ListNode *tmp, *run = dum;
+        auto cmp = [&](const ListNode* a, const ListNode* b) {
+            return a->val > b->val;
+        };
+        priority_queue<ListNode*, vector<ListNode*>, decltype(cmp)>pq(cmp);
+        for (ListNode* a : lists) if (a) pq.push(a);
+        ListNode* dmy = new ListNode(0);
+        ListNode* run = dmy;
         while (!pq.empty()) {
-            tmp = pq.top();
+            ListNode* tmp = pq.top();
             pq.pop();
             run->next = tmp;
-            tmp = tmp->next;
             run = run->next;
-            if (tmp) pq.emplace(tmp);
+            tmp = tmp->next;
+            if (tmp) pq.push(tmp);
         }
-        run->next = nullptr;
-        return dum->next;
+        return dmy->next;
     }
 };
