@@ -3,28 +3,24 @@
  * @return {string}
  */
 var longestPalindrome = function(s) {
-  var longest = [];
-  var grid = [];
-  for (var i = 0; i < s.length; i++) {
-    grid[i] = [];
-  }
-  for (var j = 0; j < s.length; j++) {
-    for (var k = 0; k < s.length; k++) {
-      if (j === 0) {
-        grid[k][k] = true;
-        longest = [k, k];        
-      } else if (j === 1) {
-        if (s[k] === s[k + j]) {
-          grid[k][k + j] = true;
-          longest = [k, k + j];
-        }
-      } else {
-        if (s[k] === s[k + j] && grid[k + 1][k + j - 1]) {
-          grid[k][k + j] = true;
-          longest = [k, k + j];
-        }
-      }
+    const N = s.length;
+    let dp = Array.from(Array(N), () => new Array(N).fill(false));
+    for (let i = 0; i < N; ++i) {
+        dp[i][i] = true;
+        if (i > 0) dp[i][i-1] = true;
     }
-  }
-  return s.slice(longest[0], longest[1] + 1);
+    let i, j;
+    i = j = 0;
+    for (let y = N-1; y >= 0; --y) {
+        for (let x = y + 1; x < N; ++x) {
+            if (s[x] === s[y] && dp[y+1][x-1]) {
+                if (x - y > i - j) {
+                    i = x;
+                    j = y;
+                }
+                dp[y][x] = true;
+            }
+        }
+    }
+    return s.substring(j, i+1);
 };
