@@ -4,17 +4,16 @@
  * @return {number[]}
  */
 var searchRange = function(nums, target) {
-    var N = nums.length;
-    var bs = function(t) {
-        let l = 0, r = N;
+    const bs = (t) => {
+        let l = 0, r = nums.length;
         while (l < r) {
-            var m = l + Math.floor((r-l) / 2);
-            if (nums[m] < t) l = m+1;
-            else r = m;
+            let m = l + Math.floor((r - l) / 2);
+            if (nums[m] >= t) r = m;
+            else l = m + 1;
         }
         return l;
     }
-    l = bs(target);
-    if (l == N || nums[l] != target) return [-1, -1];
-    return [l, bs(target+1)-1];
+    let idx = bs(target);
+    if (idx == nums.length || nums[idx] != target) return [-1, -1];
+    return [bs(target), bs(target+1) - 1];
 };
