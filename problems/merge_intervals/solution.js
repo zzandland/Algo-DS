@@ -1,39 +1,22 @@
 /**
- * Definition for an interval.
- * function Interval(start, end) {
- *     this.start = start;
- *     this.end = end;
- * }
- */
-/**
- * @param {Interval[]} intervals
- * @return {Interval[]}
+ * @param {number[][]} intervals
+ * @return {number[][]}
  */
 var merge = function(intervals) {
-  if (intervals.length === 1) {
-    return intervals;
-  }
-  var start, target, min, max, newI;
-  var set = new Set();
-  for (var i = 0; i < intervals.length; i++) {
-    start = intervals[i];
-    for (var j = i + 1; j < intervals.length; j++) {
-      target = intervals[j];
-      if ((start.end >= target.start && start.start <= target.end)
-         || (start.end <= target.start && start.start >= target.end)) {
-        min = Math.min(start.start, target.start);
-        max = Math.max(start.end, target.end);
-        newI = new Interval(min, max);
-        intervals.splice(j, 1);
-        start = newI;
-        j--;
-      }
-    }
-    if (!set.has(newI)) {
-      intervals.splice(i, 1, newI || start);
-      set.add(newI);
-      i = -1;
-    }
-  }
-  return intervals;
+    intervals.sort((a, b) => a[0] - b[0]);
+    res = []
+    let a, b;
+    a = b = -1;
+    intervals.forEach(([s, e]) => {
+        if (b < s) {
+            res.push([a, b]);
+            a = s;
+            b = e;
+        } else {
+            b = Math.max(b, e);
+        }
+    })
+    res.push([a, b]);
+    res.shift();
+    return res;
 };
