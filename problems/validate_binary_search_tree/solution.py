@@ -6,7 +6,8 @@
 #         self.right = right
 class Solution:
     def isValidBST(self, root: TreeNode) -> bool:
-        def helper(n: TreeNode, l: int, r: int) -> bool:
-            if not n: return True
-            return l < n.val < r and helper(n.left, l, n.val) and helper(n.right, n.val, r)
-        return helper(root, float('-inf'), float('inf'))
+        def dfs(root: TreeNode, l: int, r: int) -> bool:
+            if not root: return True
+            if not (l < root.val < r): return False
+            return dfs(root.left, l, root.val) and dfs(root.right, root.val, r)
+        return dfs(root, float('-inf'), float('inf'))
