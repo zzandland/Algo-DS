@@ -1,18 +1,24 @@
 class Solution:
     def exist(self, board: List[List[str]], word: str) -> bool:
-        M, N, L = len(board), len(board[0]), len(word)
-        seen = set()
-        # dfs and matching chars on board with the word
-        # set dynamically grows and shrinks to handle visiting agian
-        def dfs(y: int, x: int, i: int) -> bool:
-            if (y, x) in seen or board[y][x] != word[i]: return False
-            if i == L-1: return True
-            seen.add((y, x))
-            for ny, nx in ((y+r, x+c) for r, c in ((1, 0), (-1, 0), (0, 1), (0, -1))):
-                if 0 <= ny < M and 0 <= nx < N and dfs(ny, nx, i+1): return True
-            seen.remove((y, x))
+        m, n = len(board), len(board[0])
+        seen = [[False for j in range(n)] for i in range(m)]
+        
+        def dfs(y: int, x: int, i: int) -> None:
+            nonlocal seen
+            if word[i] != board[y][x]: return False
+            if i == len(word) - 1: return True
+            for r, c in zip((1, 0, -1, 0, 1), (0, -1, 0, 1)):
+                ny, nx = y + r, x + c
+                if 0 <= ny < m and 0 <= nx < n and not seen[ny][nx]:
+                    seen[ny][nx] = True
+                    if dfs(ny, nx, i+1): return True
+                    seen[ny][nx] = False
             return False
         
-        for y, x in ((y, x) for y in range(M) for x in range(N)):
-            if dfs(y, x, 0): return True
+        for i in range(m):
+            for j in range(n):
+                if board[i][j] == word[0]:
+                    seen[i][j] = True
+                    if dfs(i, j, 0): return True
+                    seen[i][j] = False
         return False
