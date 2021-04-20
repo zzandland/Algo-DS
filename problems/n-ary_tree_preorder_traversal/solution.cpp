@@ -21,19 +21,16 @@ public:
 class Solution {
 public:
     vector<int> preorder(Node* root) {
-        if (!root) return vector<int>();
-        stack<Node*> st;
-        st.push(root);
         vector<int> res;
-        while (!st.empty()) {
-            Node* n = st.top();
-            st.pop();
+        if (!root) return res;
+        stack<Node*> s;
+        s.push(root);
+        while (!s.empty()) {
+            Node *n = s.top();
             res.push_back(n->val);
-            stack<Node*> tmp;
-            for (Node* p: n->children) tmp.push(p);
-            while (!tmp.empty()) {
-                st.push(tmp.top());
-                tmp.pop();
+            s.pop();
+            for (int i = n->children.size() - 1; i >= 0; --i) {
+                s.push(n->children[i]);
             }
         }
         return res;
