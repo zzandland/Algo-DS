@@ -1,8 +1,7 @@
 class Solution {
 public:
-  bool isPowerOfThree(int n) {
-    if (n == 0) return false;
-    double exp = log10(n) / log10(3);
-    return round(exp) == exp;
-  }
+    bool isPowerOfThree(int n) {
+        while (n % 3 == 0 && n > 1) n /= 3;
+        return n == 1;
+    }
 };
