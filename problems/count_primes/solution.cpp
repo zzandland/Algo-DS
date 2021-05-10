@@ -1,16 +1,16 @@
 class Solution {
 public:
-  int countPrimes(int n) {
-    vector<bool> not_prime(n);
-    int count = 0;
-    for (size_t i = 2; i < n; ++i) {
-      if (!not_prime[i]) {
-        count++;
-        for (size_t j = 2; i * j < n; ++j) {
-          not_prime[i * j] = true;
+    int countPrimes(int n) {
+        vector<bool> sieve(n-2, true);
+        int res = 0;
+        for (int i = 2; i < n; ++i) {
+            if (sieve[i-2]) {
+                ++res;
+                for (int j = 2; i * j < n; ++j) {
+                    sieve[i*j-2] = false;
+                }
+            }
         }
-      }
+        return res;
     }
-    return count;
-  }
 };
