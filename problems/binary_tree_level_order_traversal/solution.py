@@ -7,15 +7,13 @@
 class Solution:
     def levelOrder(self, root: TreeNode) -> List[List[int]]:
         if not root: return []
-        q = [root]
-        res = []
+        q, res = [root], []
         while q:
-            nq = []
-            level = []
+            tmp, nq = [], []
             for n in q:
-                level.append(n.val)
+                tmp.append(n.val)
                 if n.left: nq.append(n.left)
                 if n.right: nq.append(n.right)
-            q = nq       
-            res.append(level)
+            res.append(tmp)
+            q = nq
         return res
