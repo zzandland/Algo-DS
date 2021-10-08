@@ -1,42 +1,46 @@
 struct Node {
-    bool end;
-    unordered_map<char, Node*> next;
-    Node(): end(false) {}
+    bool term = false;
+    vector<Node*> nxt;
+    
+    Node(): nxt(27, nullptr) {}
 };
 
 class Trie {
 public:
-    Node* root;
+    Node *root_ = nullptr;
     
-    /** Initialize your data structure here. */
-    Trie(): root(new Node()) {}
+    Trie() {
+        root_ = new Node();
+    }
     
-    /** Inserts a word into the trie. */
     void insert(string word) {
-        Node* n = root;
-        for (char c: word) {
-            if (!n->next.count(c)) n->next[c] = new Node();
-            n = n->next[c];
+        Node *n = root_;
+        for (const char c : word) {
+            int i = c - 'a';
+            if (!n->nxt[i]) {
+                n->nxt[i] = new Node();
+            }
+            n = n->nxt[i];
         }
-        n->end = true;
+        n->term = true;
     }
     
-    /** Returns if the word is in the trie. */
     bool search(string word) {
-        Node* n = root;
-        for (char c: word) {
-            if (!n->next.count(c)) return false;
-            n = n->next[c];
+        Node *n = root_;
+        for (const char c : word) {
+            int i = c -'a';
+            if (!n->nxt[i]) return false;
+            n = n->nxt[i];
         }
-        return n->end;
+        return n->term;
     }
     
-    /** Returns if there is any word in the trie that starts with the given prefix. */
     bool startsWith(string prefix) {
-        Node* n = root;
-        for (char c: prefix) {
-            if (!n->next.count(c)) return false;
-            n = n->next[c];
+        Node *n = root_;
+        for (const char c : prefix) {
+            int i = c -'a';
+            if (!n->nxt[i]) return false;
+            n = n->nxt[i];
         }
         return true;
     }
